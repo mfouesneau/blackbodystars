@@ -1,21 +1,16 @@
 {
     "configurations": [
         {
-            "name": "Mac",
+            "name": "conan",
             "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [],
-            "macFrameworkPath": [
-                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+                "~/.conan/data/**",
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include"
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64",
-            "compilerArgs": [
-                "-framework Accelerate "
-            ],
             "browse": {
                 "path": []
             }
