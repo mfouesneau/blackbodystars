@@ -27,3 +27,4 @@ RUN cat /etc/ld.so.conf
 RUN ldconfig
 
 USER gitpod
+RUN pip install conan
