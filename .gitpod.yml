@@ -2,5 +2,6 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: 'conan install .'
-    command: 'cmake .'
+  - init: "pip install conan"
+  - command: "conan install . "
+  - command: "cmake ."
