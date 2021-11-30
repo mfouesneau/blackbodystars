@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        { "type": "gdb",
+          "request": "launch",
+          "name": "GDB: blackbodystars",
+          "target": "${workspaceRoot}/bin/blackbodystars",
+          "args": [],
+          "cwd": "${workspaceRoot}",
+          "valuesFormatting": "parseText",
+          "preLaunchTask": "DEBUG: cmake && make"
+        },
+        { "type": "cppdbg",
+          "request": "launch",
+          "name": "cppdbg: blackbodystars",
+          "program": "${workspaceRoot}/bin/blackbodystars",
+          "args": [],
+          "cwd": "${workspaceRoot}",
+          "valuesFormatting": "parseText",
+          "preLaunchTask": "DEBUG: cmake && make",
+          "linux": {
+            "MIMode": "gdb",
+            //"miDebuggerPath": "/usr/bin/gdb"
+          },
+          "osx": {
+            "MIMode": "lldb"
+          },
+        }
+    ]
+}
