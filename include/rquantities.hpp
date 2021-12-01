@@ -504,28 +504,28 @@ inline double tan(const Angle &num)
 }
 
 /**
- * Nice representation of Butlers
+ * Nice representation
  */
 template <typename M, typename l, typename T, typename A, typename C, typename L, typename S, typename D>
 std::ostream &operator<<(std::ostream &os, RQuantity<M, l, T, A, C, L, S, D>& rhs) {
     os << rhs.getValue();
-    return os << std::endl;
+    return os;
 }
 
 std::ostream &operator<<(std::ostream &os, QLength rhs){
     os << rhs.getValue();
-    return os << std::endl;
+    return os;
 }
 
 std::ostream &operator<<(std::ostream &os, QMass rhs){
     os << rhs.getValue();
-    return os << std::endl;
+    return os;
 }
 std::ostream &operator<<(std::ostream &os, QLuminosity rhs){
     os << rhs.getValue();
-    return os << std::endl;
+    return os;
 }
 std::ostream &operator<<(std::ostream &os, QFlux rhs){
     os << rhs.getValue();
-    return os << std::endl;
+    return os;
 }
