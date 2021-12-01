@@ -55,7 +55,7 @@ install(TARGETS blackbodystars
 # add testing libraries
 # include(CTest)
 enable_testing()
-add_executable(test_main 
+add_executable(test_main
         ${PROJECT_SOURCE_DIR}/tests/test_main.cpp)
 
 target_link_libraries(test_main
