@@ -6,7 +6,6 @@
  *
  */
 #include <iostream>
-#include "example.hpp"
 #include <exception>
 #include <iostream>
 #include <cmath>
@@ -17,17 +16,30 @@
 #include <xtensor/xio.hpp>
 #include <xtensor/xview.hpp>
 #include "rquantities.hpp"
+#include "prettyprint.hpp"
+#include "blackbody.hpp"
 
+
+template<typename T>
+void EXPECT_NEAR(const T& T1, const T& T2, const T& T3)
+{
+    if (std::abs(T1 - T2) > T3) {throw std::logic_error("EXPECT_NEAR failed.");}
+}
+
+
+/**
+ * @brief Testing simple array creation and cout
+ *
+ */
 void test_array(){
     int A[3] {3, 5, 7};
+    std::cout << "manual cout: ";
     for (auto val : A){
         std::cout << val << " ";
     }
     std::cout << "\n";
-}
-
-void test_example1(){
-    example::example1();
+    std::cout << "prettyprint's cout: ";
+    std::cout << A << "\n";
 }
 
 void test_xtensor(){
@@ -44,14 +56,26 @@ void test_xtensor(){
     std::cout << res << std::endl;
 }
 
+/**
+ * @brief Testing unit conversions
+ */
 void test_units(){
-    std::cout << (45_km).to(parsec) << "\n";
-    std::cout << (1 * lsun) << "\n";
+    EXPECT_NEAR((45_km).to(parsec), 1.45835e-12, 1e-15);
+    EXPECT_NEAR((1. * lsun).to(watt), 3.839e+26, 1.);
+}
+
+/**
+ * @brief testing blackbody function with units
+ *
+ */
+void test_blackbody(){
+    const auto val = bb_flux_function(500e-9 * metre, 1., 5000 * kelvin);
+    EXPECT_NEAR(val.Convert(flam), 1.21072e+06, 1e-15);
+    EXPECT_NEAR((500._nm * val).to(watt/metre2), 6.0536e+06, 1e-15);
 }
 
 int main() {
     test_array();
-    test_example1();
     test_xtensor();
     test_units();
     // std::cout << bb_flux_function(500, 1., 5000) << std::endl;

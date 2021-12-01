@@ -2,6 +2,7 @@
  * @file rquantities.hpp
  * @brief "RQuantity" class is the prototype template container class, that just holds a double value.
  */
+#pragma once
 #include <ratio>
 #include <ostream>
 #include <string.h>
@@ -233,6 +234,8 @@ constexpr QLength centimetre = metre / 100;
 constexpr QLength millimetre = metre / 1000;
 constexpr QLength micrometre = millimetre / 1000;
 constexpr QLength nanometre = micrometre / 1000;
+constexpr QLength nanometer = nanometre;
+constexpr QLength nm = nanometer;
 constexpr QLength angstrom = micrometre / 10000;
 constexpr QLength kilometre = 1000 * metre;
 constexpr QLength inch = 2.54 * centimetre;
@@ -330,6 +333,8 @@ constexpr QLength operator"" _pc(unsigned long long int  x) { return static_cast
 // -----------------------
 
 // literals for length units
+constexpr QLength operator"" _AA(long double x) { return static_cast<double>(x)*angstrom; }
+constexpr QLength operator"" _nm(long double x) { return static_cast<double>(x)*nanometre; }
 constexpr QLength operator"" _mm(long double x) { return static_cast<double>(x)*millimetre; }
 constexpr QLength operator"" _cm(long double x) { return static_cast<double>(x)*centimetre; }
 constexpr QLength operator"" _m(long double x) { return static_cast<double>(x)*metre; }
