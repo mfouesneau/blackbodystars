@@ -4,7 +4,7 @@ A template project for C++ development using [CMake](https://cmake.org/) and [Co
 
 ## Gitpod
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mfouesneau/gitpod-cpp-project-template)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mfouesneau/blackbodystars)
 
 
 Gitpod is a friendly online IDE very similar to VSCode ([Gitpod.io](https://gitpod.io/)
