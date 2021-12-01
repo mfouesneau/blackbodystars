@@ -26,7 +26,8 @@ We discuss the value of this sample of objects for the precise calibration of ph
 
 [Planck's Law](https://en.wikipedia.org/wiki/Planck%27s_law) of blackbody radiation states[^Rybicki1979] that
 
-$${\displaystyle f_{\lambda }(T)=a\,\cdot\,{\frac {2h\nu ^{3}}{c^{2}}}{\frac {1}{e^{h\nu /kT}-1}}=a\,\cdot\,\frac{2hc^2}{\lambda^5}{\frac {1}{e^{hc /\lambda kT}-1}},}$$
+$$ {\displaystyle f_{\lambda }(T)=a\,\cdot\,{\frac {2h\nu ^{3}}{c^{2}}}{\frac {1}{e^{h\nu /kT}-1}}=a\,\cdot\,\frac{2hc^2}{\lambda^5}{\frac {1}{e^{hc /\lambda kT}-1}},}$$
+
 where
 
 * $f_\lambda(T)$ is the spectral flux density at thermal equilibrium of temperature $T$.
