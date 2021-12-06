@@ -5,11 +5,14 @@
  * @date 2021-11-23
  *
  */
-#include <iostream>
-#include <exception>
 #include <cmath>
+#include <exception>
+#include <fstream>
+#include <iostream>
 #include <ratio>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <xtensor/xarray.hpp>
 #include <xtensor/xbuilder.hpp>
 #include <xtensor/xio.hpp>
@@ -19,6 +22,10 @@
 #include "blackbody.hpp"
 #include "helpers.hpp"
 #include "prettyprint.hpp"
+#include <cpr/cpr.h>
+#include "xml2json.hpp"
+#include "rapidjson/document.h"
+#include "votable.hpp"
 
 using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
 
@@ -54,6 +61,15 @@ class Filter {
 
 };
 
+
+std::string download_svo_filter(std::string id){
+    cpr::Response r = cpr::Get(cpr::Url{"http://svo2.cab.inta-csic.es/theory/fps/getdata.php?format=ascii&id=Generic/Bessell_JHKLM.J"});
+                               // cpr::Parameters{{"format", "ascii"}, {"id", "Generic/Bessell_JHKLM.J"}});
+    std::cout << "\n URL: " << r.url << std::endl;
+    std::cout << "\n Content: \n" << r.text << std::endl;
+    return r.text;
+}
+
 int main() {
 
 rapidcsv::Document doc("data/blackbody-stars-clean.csv");
@@ -70,8 +86,46 @@ for (const auto& p: doc.GetColumnNames()){
 }
 std::cout << columns << "\n";
 
-// std::vector<float> col = doc.GetColumn<float>("GALEX_FUV");
-// std::cout << doc.GetColumnNames() << "\n";
+std::vector<float> col = doc.GetColumn<float>("GALEX_FUV");
+std::cout << col << "\n";
+//std::cout << doc.GetColumnNames() << "\n";
+
+// Seg fault in the following
+// auto data = download_svo_filter("Generic/Bessell_JHKLM.J");
+
+/*
+rapidcsv::Document filt("/workspace/blackbodystars/data/passbands/Bessell_JHKLM.J",
+                        rapidcsv::LabelParams(-1, -1),
+                        rapidcsv::SeparatorParams(' ')
+                        );
+std::cout << filt.GetColumn<std::string>(0) << "\n";
+std::vector<float> wavelength = doc.GetColumn<float>(0, rapidcsv::Converter<float>(rapidcsv::ConverterParams()));
+//std::vector<double> transmission = doc.GetColumn<double>(1);
+
+std::string xml_str, json_str;
+std::ostringstream oss;
+std::ifstream infile;
+infile.open("data/passbands/GAIA.GAIA3.G.xml");
+oss.str("");
+oss << infile.rdbuf();
+xml_str = oss.str().data();
+infile.close();
+json_str = xml2json(xml_str.c_str());
+
+std::cout << json_str << "\n";
+
+rapidjson::Document document;
+document.Parse(json_str.c_str());
+*/
+
+votable::VOTable vot("data/passbands/GAIA.GAIA3.G.xml");
+
+// auto vot = document["VOTABLE"].GetString();
+std::cout << "VOTABLE" << "\n"
+          << "@version: " << vot.version
+          << "\n";
+
+
 std::cout << "done.\n";
 
 }
