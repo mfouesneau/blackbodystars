@@ -137,11 +137,11 @@ std::string VOTable::get_param(const std::string & key){
 }
 
 void VOTable::testing(){
-    std::cout << this->param["filterID"] 
+    std::cout << this->params["filterID"] 
               << " "
-              << this->param["DetectorType"] 
+              << this->params["DetectorType"] 
               << " "
-              << this->param["MagSys"] 
+              << this->params["MagSys"] 
               << "\n";
 }
 
