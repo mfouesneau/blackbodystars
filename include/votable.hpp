@@ -119,8 +119,6 @@ void VOTable::setup(){
         if (v.HasMember("@unit")) {p.unit = v["@unit"].GetString();}
         if (v.HasMember("@DESCRIPTION")) {p.description = v["@DESCRIPTION"].GetString(); }
         this->params[name] = p;
-        //this->param[v["@name"].GetString()] = v["@value"].GetString();
-        //this->param_type[v["@name"].GetString()] = v["@datatype"].GetString();
     }
     std::cout << this->params << "\n";
     /*
@@ -130,10 +128,6 @@ void VOTable::setup(){
         this->param_type[v["@name"].GetString()] = v["@datatype"].GetString(); 
     }
     */
-}
-
-std::string VOTable::get_param(const std::string & key){
-    return this->param[key];
 }
 
 void VOTable::testing(){
