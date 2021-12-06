@@ -8,19 +8,65 @@
 #include "rapidjson/document.h"
 #include <string>
 #include <map>
+#include "prettyprint.hpp"
 
 
+/**
+ * @brief Parse a char* into a numeric value.
+ * 
+ * @tparam T   the output type 
+ * @param txt  the string to parse
+ * @return T   the value as a T type
+ */
 template <typename T>
 T parseString(const char * txt){
     T d  = std::atof(txt);
     return d;
 }
 
+/**
+ * @brief Parse a std::string into a numeric value.
+ * 
+ * @tparam T   the output type 
+ * @param txt  the string to parse
+ * @return T   the value as a T type
+ */
 template <typename T>
 T parseString(const std::string& txt){
     T d  = std::atof(txt.c_str());
     return d;
 }
+
+/**
+ * @brief Store Table Parameter Attributes
+ * 
+ */
+struct Param {
+    std::string name;
+    std::string datatype;
+    std::string value;
+    std::string ucd;
+    std::string utype;
+    std::string unit;
+    std::string description;
+};
+
+
+/**
+ * Display an `std::vector` object
+ */
+std::ostream & operator<<(std::ostream &os,
+                          const Param &v)
+{
+    os << "Param " << v.name << "= "
+       << v.value  << " [" << v.unit << "]\n"
+       << "     DTYPE=" << v.datatype << "\n"
+       << "     UCD=" << v.ucd << "\n"
+       << "     DESCRIPTION=" << v.description << "\n";
+    return os;
+}
+
+
 
 namespace votable {
 
@@ -29,15 +75,13 @@ namespace votable {
         public:
             VOTable(const std::string & input_filename);
             std::string version;
-            std::map<std::string, std::string> param;
-            std::map<std::string, std::string> param_type;
-
-
+            std::map<std::string, Param> params;  ///< Table parameters
 
         private:
             rapidjson::Document document;  /** Storing the JSON document */
             std::string get_version(){return document["VOTABLE"]["@version"].GetString();}
             void testing();
+            void setup();
 
     };
 
@@ -56,26 +100,49 @@ VOTable::VOTable(const std::string & input_filename){
     infile.close();
     std::string json_str = xml2json(oss.str().data());
     this->document.Parse(json_str.c_str());
+    this->setup();
     this->version = this->get_version();
+
     this->testing();
 }
 
-void VOTable::testing(){
+void VOTable::setup(){
     const rapidjson::Value& where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["PARAM"];
-    for (auto& v : where.GetArray()){
-        if (std::string(v["@datatype"].GetString()).compare("float") == 0){
-            //double d  = std::atof(v["@value"].GetString());
-            std::cout << v["@name"].GetString() << ": " 
-                    << parseString<double>(v["@value"].GetString())
-                    // << " (" << v["@datatype"].GetString() << ")"
-                    << "\n";
-        } else {
-            std::cout << v["@name"].GetString() << ": " 
-                    << v["@value"].GetString() 
-                    << " (" << v["@datatype"].GetString() << ")"
-                    << "\n";
-        }
+    for (const auto& v : where.GetArray()){
+        Param p;
+        auto name = v["@name"].GetString();
+        p.name = name;
+        p.datatype = v["@datatype"].GetString();
+        p.value = v["@value"].GetString();
+        if (v.HasMember("@ucd")) {p.ucd = v["@ucd"].GetString();}
+        if (v.HasMember("@ytype")) {p.utype = v["@utype"].GetString();}
+        if (v.HasMember("@unit")) {p.unit = v["@unit"].GetString();}
+        if (v.HasMember("@DESCRIPTION")) {p.description = v["@DESCRIPTION"].GetString(); }
+        this->params[name] = p;
+        //this->param[v["@name"].GetString()] = v["@value"].GetString();
+        //this->param_type[v["@name"].GetString()] = v["@datatype"].GetString();
     }
+    std::cout << this->params << "\n";
+    /*
+    where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["FIELD"];
+    for (auto& v : where.GetArray()){
+        this->param[v["@name"].GetString()] = v["@value"].GetString();
+        this->param_type[v["@name"].GetString()] = v["@datatype"].GetString(); 
+    }
+    */
+}
+
+std::string VOTable::get_param(const std::string & key){
+    return this->param[key];
+}
+
+void VOTable::testing(){
+    std::cout << this->param["filterID"] 
+              << " "
+              << this->param["DetectorType"] 
+              << " "
+              << this->param["MagSys"] 
+              << "\n";
 }
 
 
