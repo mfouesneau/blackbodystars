@@ -24,6 +24,10 @@ std::string download_svo_filter(std::string id){
 
 int main(){
 
+    // the following works
+    cpr::Response r = cpr::Get(cpr::Url{"http://svo2.cab.inta-csic.es/theory/fps/getdata.php?format=votable&id=Generic/Bessell_JHKLM.J"});
+
+    // the following generates a segfault
    cpr::Parameters{{"format", "ascii"}, {"id", "Generic/Bessell_JHKLM.J"}}; 
 
 }
