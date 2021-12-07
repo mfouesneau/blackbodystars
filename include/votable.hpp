@@ -51,6 +51,20 @@ struct Param {
     std::string description;
 };
 
+/**
+ * @brief Store Table Field and data
+ * 
+ */
+struct Field {
+    std::string name;
+    std::string datatype;
+    std::string ucd;
+    std::string utype;
+    std::string unit;
+    std::string description;
+    std::vector<std::string> data;
+};
+
 
 /**
  * Display an `std::vector` object
@@ -58,8 +72,23 @@ struct Param {
 std::ostream & operator<<(std::ostream &os,
                           const Param &v)
 {
-    os << "Param " << v.name << "= "
+    os << "Param: " << v.name << "= "
        << v.value  << " [" << v.unit << "]\n"
+       << "     DTYPE=" << v.datatype << "\n"
+       << "     UCD=" << v.ucd << "\n"
+       << "     DESCRIPTION=" << v.description << "\n";
+    return os;
+}
+
+
+/**
+ * Display an `std::vector` object
+ */
+std::ostream & operator<<(std::ostream &os,
+                          const Field &v)
+{
+    os << "Field: " << v.name << "length="
+       << v.data.size()  << " [" << v.unit << "]\n"
        << "     DTYPE=" << v.datatype << "\n"
        << "     UCD=" << v.ucd << "\n"
        << "     DESCRIPTION=" << v.description << "\n";
@@ -76,12 +105,14 @@ namespace votable {
             VOTable(const std::string & input_filename);
             std::string version;
             std::map<std::string, Param> params;  ///< Table parameters
+            std::map<std::string, Field> fields;  ///< Table parameters
 
         private:
             rapidjson::Document document;  /** Storing the JSON document */
             std::string get_version(){return document["VOTABLE"]["@version"].GetString();}
             void testing();
-            void setup();
+            void setup_params();
+            void setup_fields();
 
     };
 
@@ -100,13 +131,16 @@ VOTable::VOTable(const std::string & input_filename){
     infile.close();
     std::string json_str = xml2json(oss.str().data());
     this->document.Parse(json_str.c_str());
-    this->setup();
+    this->setup_params();
+    this->setup_fields();
     this->version = this->get_version();
 
     this->testing();
 }
 
-void VOTable::setup(){
+void VOTable::setup_params(){
+
+    // read in the document PARAMs
     const rapidjson::Value& where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["PARAM"];
     for (const auto& v : where.GetArray()){
         Param p;
@@ -120,14 +154,24 @@ void VOTable::setup(){
         if (v.HasMember("@DESCRIPTION")) {p.description = v["@DESCRIPTION"].GetString(); }
         this->params[name] = p;
     }
-    std::cout << this->params << "\n";
-    /*
-    where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["FIELD"];
-    for (auto& v : where.GetArray()){
-        this->param[v["@name"].GetString()] = v["@value"].GetString();
-        this->param_type[v["@name"].GetString()] = v["@datatype"].GetString(); 
+}
+
+void VOTable::setup_fields(){ 
+
+    // Read in FIELD information
+    const rapidjson::Value& where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["FIELD"];
+    for (const auto& v : where.GetArray()){
+        Field p;
+        auto name = v["@name"].GetString();
+        p.name = name;
+        p.datatype = v["@datatype"].GetString();
+        if (v.HasMember("@ucd")) {p.ucd = v["@ucd"].GetString();}
+        if (v.HasMember("@ytype")) {p.utype = v["@utype"].GetString();}
+        if (v.HasMember("@unit")) {p.unit = v["@unit"].GetString();}
+        if (v.HasMember("@DESCRIPTION")) {p.description = v["@DESCRIPTION"].GetString(); }
+        this->fields[name] = p;
     }
-    */
+    std::cout << this->fields << "\n";
 }
 
 void VOTable::testing(){

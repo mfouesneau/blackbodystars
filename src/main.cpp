@@ -127,5 +127,6 @@ std::cout << "VOTABLE" << "\n"
 
 
 std::cout << "done.\n";
+return 0;
 
 }
