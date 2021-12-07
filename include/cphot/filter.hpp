@@ -38,20 +38,34 @@ class Filter {
         static constexpr double c = speed_of_light.to(angstrom / second);
         static constexpr double h = 6.62607015e-27;  // erg/s
 
-        DMatrix wavelength_nm;
+        //! wavelength of the filter stored in nm 
+        DMatrix wavelength_nm;       
+        //! transmission of the passband
         DMatrix transmission;
+        //! name of the filter
         std::string name = "";
+        //! type, either photon or energy
         std::string dtype = "photon";
 
+        //! Central wavelength in nm
         double cl;
+        //! pivot wavelength in nm
         double lpivot;
+        //! minimum wavelength in nm
         double lmin;
+        //! maximum wavelength in nm
         double lmax;
+        //! norm of the passband
         double norm;
+        //! effective width in nm
         double width;
+        //! full width at half maximum in nm
         double fwhm;
+        //! Photon distribution based effective wavelength.
         double lphot = 0;
+        //! Effective wavelength
         double leff = 0;
+        //! Internal int λ * transmission * dλ
         double lT;
 
         void calculate_sed_independent_properties();
