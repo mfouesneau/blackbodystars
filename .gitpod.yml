@@ -10,3 +10,4 @@ vscode:
     - webfreak.debug
     - ms-vscode.cmake-tools
     - twxs.cmake
+    - cschlosser.doxdocgen
