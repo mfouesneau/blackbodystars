@@ -5,62 +5,16 @@
  * @date 2021-11-23
  *
  */
-#include <cmath>
-#include <exception>
-#include <fstream>
-#include <iostream>
-#include <ratio>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <xtensor/xarray.hpp>
-#include <xtensor/xbuilder.hpp>
-#include <xtensor/xio.hpp>
-#include <xtensor/xview.hpp>
+/*
 #include "rquantities.hpp"
 #include "rapidcsv.hpp"
 #include "blackbody.hpp"
 #include "helpers.hpp"
 #include "prettyprint.hpp"
+*/
 #include <cpr/cpr.h>
-#include "xml2json.hpp"
-#include "rapidjson/document.h"
 #include "votable.hpp"
-
-using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
-
-class Filter {
-
-    private:
-        static constexpr double c = speed_of_light.to(angstrom / second);
-        static constexpr double h = 6.62607015e-27;  // erg/s
-
-        DMatrix wavelength_nm;
-        DMatrix transmission;
-        std::string name = "";
-        std::string dtype = "photon";
-
-    public:
-        Filter(const DMatrix& wavelength,
-               const DMatrix& transmission,
-               const QLength& wavelength_unit,
-               const std::string dtype,
-               const std::string name){
-                    double convfac = wavelength_unit.to(nanometre);
-                    this->wavelength_nm = convfac * wavelength;
-                    this->name = name;
-                    this->transmission = transmission;
-
-                    if ((dtype.compare("photon") == 0) ||
-                        (dtype.compare("energy"))){
-                        this->dtype = dtype;
-                    } else {
-                        throw std::runtime_error("only photon and energy allowed");
-                    }
-                }
-
-};
-
+#include "cphot/filter.hpp"
 
 std::string download_svo_filter(std::string id){
     cpr::Response r = cpr::Get(cpr::Url{"http://svo2.cab.inta-csic.es/theory/fps/getdata.php?format=ascii&id=Generic/Bessell_JHKLM.J"});
@@ -70,8 +24,10 @@ std::string download_svo_filter(std::string id){
     return r.text;
 }
 
+
 int main() {
 
+/*
 rapidcsv::Document doc("data/blackbody-stars-clean.csv");
 
 std::vector<std::string> ignore = {
@@ -89,21 +45,18 @@ std::cout << columns << "\n";
 std::vector<float> col = doc.GetColumn<float>("GALEX_FUV");
 std::cout << col << "\n";
 //std::cout << doc.GetColumnNames() << "\n";
+*/
 
 // Seg fault in the following
 // auto data = download_svo_filter("Generic/Bessell_JHKLM.J");
 
-votable::VOTable vot("data/passbands/GAIA.GAIA3.G.xml");
+cphot::Filter gaia_G = cphot::get_filter("data/passbands/GAIA.GAIA3.G.xml");
 
-std::cout << vot << "\n";
+std::cout << gaia_G;
+
+gaia_G.info();
 
 
-std::cout << vot.params["filterID"] 
-            << " "
-            << vot.get<double>("Wavelength")
-            << "\n"
-            << vot.get<double>(1)
-            << "\n";
 
 std::cout << "done.\n";
 return 0;
