@@ -119,12 +119,12 @@ document.Parse(json_str.c_str());
 */
 
 votable::VOTable vot("data/passbands/GAIA.GAIA3.G.xml");
-
-// auto vot = document["VOTABLE"].GetString();
-std::cout << "VOTABLE" << "\n"
-          << "@version: " << vot.version
-          << "\n";
-
+std::cout << vot.params["filterID"] 
+            << " "
+            << vot.get<double>("Wavelength")
+            << "\n"
+            << vot.get<double>(1)
+            << "\n";
 
 std::cout << "done.\n";
 return 0;
