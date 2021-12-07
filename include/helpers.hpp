@@ -7,18 +7,16 @@
  */
 #ifndef Helpers_HH
 #define Helpers_HH
-#include <string>
-#include <iostream>
-#include <dirent.h>
-#include <sys/types.h>
-#include <string>
-#include <regex>
 #include <algorithm>
-#include <cstdio>
-#include <string>
 #include <cassert>
+#include <cstdio>
+#include <dirent.h>
+#include <iostream>
+#include <regex>
 #include <sstream>
+#include <string>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <vector>
 
 
