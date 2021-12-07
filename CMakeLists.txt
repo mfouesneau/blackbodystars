@@ -40,13 +40,14 @@ add_executable(blackbodystars
 add_executable(test_cpr
         ${PROJECT_SOURCE_DIR}/src/cpr_test.cpp)
 
-target_link_libraries(test_cpr
-        ${blas_libraries} ${lapack_libraries}
-        ${CONAN_LIBS})
 
 # Link the executables to external libraries
 # -------------------------------------------
 target_link_libraries(blackbodystars
+        ${blas_libraries} ${lapack_libraries}
+        ${CONAN_LIBS})
+
+target_link_libraries(test_cpr
         ${blas_libraries} ${lapack_libraries}
         ${CONAN_LIBS})
 
