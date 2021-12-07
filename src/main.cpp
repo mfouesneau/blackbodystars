@@ -93,32 +93,11 @@ std::cout << col << "\n";
 // Seg fault in the following
 // auto data = download_svo_filter("Generic/Bessell_JHKLM.J");
 
-/*
-rapidcsv::Document filt("/workspace/blackbodystars/data/passbands/Bessell_JHKLM.J",
-                        rapidcsv::LabelParams(-1, -1),
-                        rapidcsv::SeparatorParams(' ')
-                        );
-std::cout << filt.GetColumn<std::string>(0) << "\n";
-std::vector<float> wavelength = doc.GetColumn<float>(0, rapidcsv::Converter<float>(rapidcsv::ConverterParams()));
-//std::vector<double> transmission = doc.GetColumn<double>(1);
-
-std::string xml_str, json_str;
-std::ostringstream oss;
-std::ifstream infile;
-infile.open("data/passbands/GAIA.GAIA3.G.xml");
-oss.str("");
-oss << infile.rdbuf();
-xml_str = oss.str().data();
-infile.close();
-json_str = xml2json(xml_str.c_str());
-
-std::cout << json_str << "\n";
-
-rapidjson::Document document;
-document.Parse(json_str.c_str());
-*/
-
 votable::VOTable vot("data/passbands/GAIA.GAIA3.G.xml");
+
+std::cout << vot << "\n";
+
+
 std::cout << vot.params["filterID"] 
             << " "
             << vot.get<double>("Wavelength")

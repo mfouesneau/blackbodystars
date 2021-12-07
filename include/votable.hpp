@@ -342,4 +342,22 @@ VOField<T> VOTable::get(size_t field_index){
     return newfield;
 };
 
+/**
+* Display a `VOTable` object
+*/
+std::ostream & operator<<(std::ostream &os,
+                            const VOTable &vot)
+{
+    os << "VOTable(\n";
+    for (const auto & p: vot.params){
+        os << "  - " << p.second;
+    }
+    os << "\n";
+    for (const auto & f: vot.fields){
+        os << "  - " << f;
+    }
+    os << ")\n";
+    return os;
+}
+
 } // namespace votable
