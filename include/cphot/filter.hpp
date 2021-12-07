@@ -46,7 +46,8 @@ class Filter {
         std::string name = "";
         //! type, either photon or energy
         std::string dtype = "photon";
-
+        //! units of the wavelength (nm by construction)
+        QLength wavelength_unit = nm;
         //! Central wavelength in nm
         double cl;
         //! pivot wavelength in nm
@@ -78,6 +79,15 @@ class Filter {
                const std::string name); 
         std::string get_name(){ return this->name;}
         void info();
+        QLength get_leff();
+        QLength get_lphot();
+        QLength get_fwhm();
+        QLength get_width();
+        QLength get_norm();
+        QLength get_lmax();
+        QLength get_lmin();
+        QLength get_lpivot();
+        QLength get_cl();
 };
 
 /**
@@ -98,6 +108,7 @@ Filter::Filter(const DMatrix& wavelength,
 
     double convfac = wavelength_unit.to(nanometre);
     this->wavelength_nm = convfac * wavelength;
+    this->wavelength_unit = nm;
     this->name = name;
     this->transmission = transmission;
 
@@ -226,6 +237,94 @@ void Filter::info(){
             << "    fullwidth half-max:  " << this->fwhm  << " nm" << "\n"
             << "    definition contains " << n_points << " points" << "\n";
 }
+
+/**
+ * @brief  Central wavelength
+ * 
+ * \f cl = \int \lambda * T(\lambda) d\lambda / \int T(\lambda) d\lambda \f
+ * 
+ * @return central wavelength in nm
+ */
+QLength Filter::get_cl(){ return this->cl * this->wavelength_unit;}
+
+/**
+ * @brief  Pivot wavelength in nm
+ *
+ * if photon detector:
+ * \f \lambda_p^2 = \int \lambda * T(\lambda) d\lambda / \int T(\lambda) \dlambda / \lambda \f
+ *
+ * if energy:
+ * \f \lambda_p^2 = \int T(\lambda) d\lambda / \int T(\lambda) \dlambda / \lambda^2 \f
+ * 
+ * @return pivot wavelength in nm
+ */
+QLength Filter::get_lpivot(){ return this->lpivot * this->wavelength_unit;}
+
+/**
+ * @brief the first λ value with a transmission at least 1% of maximum transmission
+ * 
+ * @return min wavelength in nm
+ */
+QLength Filter::get_lmin(){ return this->lmin * this->wavelength_unit;}
+
+/**
+ * @brief the last λ value with a transmission at least 1% of maximum transmission
+ * 
+ * @return max wavelength in nm
+ */
+QLength Filter::get_lmax(){ return this->lmax * this->wavelength_unit;}
+
+/**
+ * @brief the norm of the passband
+ * 
+ * \f norm = \int T(\lambda) d\lambda \f
+ * 
+ * @return norm
+ */
+QLength Filter::get_norm(){ return this->norm; }
+
+/**
+ * @brief  Effective width
+ *
+ * \f width = \int T(\lambda) d\lambda / \max(T(\lambda)) \f
+ * 
+ * @return width in nm 
+ */
+QLength Filter::get_width(){ return this->width * this->wavelength_unit;}
+
+/**
+ * @brief the difference between the two wavelengths for which filter
+ * transmission is half maximum.
+ *
+ * ..note::
+ *      This calculation is not exact but rounded to the nearest passband
+ *      data points
+ * 
+ * @return fwhm in nm 
+ */
+QLength Filter::get_fwhm(){ return this->fwhm * this->wavelength_unit;}
+
+/**
+ * @brief Photon distribution based effective wavelength. 
+ *
+ * Defined as
+ * \f \lambda_{phot} = \int\lambda^2 * T(\lambda) Vega(\lambda) d\lamba / \int(\lambda T(\lambda) Vega(\lambda) d\lambda) \f
+ * 
+ * which we calculate as
+ * \f \lambda_{phot} = get_flux(\lambda Vega(\lambda)) / get_flux(Vega(\lambda)) \f
+ * 
+ * @return QLength 
+ */
+QLength Filter::get_lphot(){ return this->lphot * this->wavelength_unit;}
+
+/**
+ * @brief Effective wavelength
+ *
+ * \f \lambda_{eff} = \int \lambda T(\lambda) Vega(\lambda) d\lambda) / \int T(\lambda) Vega(\lambda) d\lambda) \f
+ * 
+ * @return Effective wavelenth
+ */
+QLength Filter::get_leff(){ return this->leff * this->wavelength_unit;}
 
 
 /**
