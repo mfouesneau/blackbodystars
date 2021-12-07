@@ -15,32 +15,6 @@
 namespace votable {
 
     /**
-    * @brief Parse a char* into a numeric value.
-    * 
-    * @tparam T   the output type 
-    * @param txt  the string to parse
-    * @return T   the value as a T type
-    */
-    template <typename T>
-    T parseString(const char * txt){
-        T d  = std::atof(txt);
-        return d;
-    }
-
-    /**
-    * @brief Parse a std::string into a numeric value.
-    * 
-    * @tparam T   the output type 
-    * @param txt  the string to parse
-    * @return T   the value as a T type
-    */
-    template <typename T>
-    T parseString(const std::string& txt){
-        T d  = std::atof(txt.c_str());
-        return d;
-    }
-
-    /**
     * @brief Store Table Parameter Attributes
     * 
     */
