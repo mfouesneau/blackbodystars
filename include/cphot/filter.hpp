@@ -77,8 +77,9 @@ class Filter {
                const QLength& wavelength_unit,
                const std::string dtype,
                const std::string name);
-        std::string get_name(){ return this->name;}
         void info();
+
+        std::string get_name(){ return this->name;}
         QLength get_leff();
         QLength get_lphot();
         QLength get_fwhm();
@@ -88,6 +89,18 @@ class Filter {
         QLength get_lmin();
         QLength get_lpivot();
         QLength get_cl();
+
+        double get_AB_zero_mag();
+        QSpectralFluxDensity get_AB_zero_flux();
+        QSpectralFluxDensity get_AB_zero_Jy();
+
+        double get_ST_zero_mag();
+        QSpectralFluxDensity get_ST_zero_flux();
+        QSpectralFluxDensity get_ST_zero_Jy();
+
+        double get_Vega_zero_mag();
+        QSpectralFluxDensity get_Vega_zero_flux();
+        QSpectralFluxDensity get_Vega_zero_Jy();
 };
 
 /**
@@ -220,6 +233,96 @@ void Filter::calculate_sed_independent_properties(){
 }
 
 /**
+ * @brief AB magnitude zero point
+ *
+ * ABmag = -2.5 * log10(f_nu) - 48.60
+ *          = -2.5 * log10(f_lamb) - 2.5 * log10(lpivot ** 2 / c) - 48.60
+ *          = -2.5 * log10(f_lamb) - zpts
+ */
+double Filter::get_AB_zero_mag(){
+    double C1 = (this->wavelength_unit).to(angstrom);
+    C1 = C1 * C1 / speed_of_light.to(angstrom / second);
+    C1 = this->lpivot * this->lpivot * C1;
+    return 2.5 * std::log10(C1) + 48.60;
+}
+
+/**
+ * @brief  AB flux zero point
+ *
+ * @return QSpectralFluxDensity
+ */
+QSpectralFluxDensity Filter::get_AB_zero_flux(){
+    return std::pow(10, -0.4 * this->get_AB_zero_mag()) * flam;
+}
+
+/**
+ * @brief AB flux zero point in Jansky (Jy)
+ *
+ * @return QSpectralFluxDensity
+ */
+QSpectralFluxDensity Filter::get_AB_zero_Jy(){
+        double c = 1e-8 * speed_of_light.to(meter / second);
+        double f = 1e5 / c * std::pow(this->get_lpivot().to(angstrom), 2) * this->get_AB_zero_flux().to(flam);
+        return f * Jy;
+}
+
+/**
+ * @brief ST magnitude zero point
+ */
+double Filter::get_ST_zero_mag(){
+    return 21.1;    // definition
+}
+
+/**
+ * @brief  ST flux zero point
+ *
+ * @return QSpectralFluxDensity
+ */
+QSpectralFluxDensity Filter::get_ST_zero_flux(){
+    return std::pow(10, -0.4 * this->get_ST_zero_mag()) * flam;
+}
+
+
+/**
+ * @brief ST flux zero point in Jansky (Jy)
+ *
+ * @return QSpectralFluxDensity
+ */
+QSpectralFluxDensity Filter::get_ST_zero_Jy(){
+        double c = 1e-8 * speed_of_light.to(meter / second);
+        double f = 1e5 / c * std::pow(this->get_lpivot().to(angstrom), 2) * this->get_ST_zero_flux().to(flam);
+        return f * Jy;
+}
+
+/**
+ * @brief Vega magnitude zero point
+ */
+double Filter::get_Vega_zero_mag(){
+    return 0.;    // definition
+}
+
+/**
+ * @brief  Vega flux zero point
+ *
+ * @return QSpectralFluxDensity
+ */
+QSpectralFluxDensity Filter::get_Vega_zero_flux(){
+    return std::pow(10, -0.4 * this->get_Vega_zero_mag()) * flam;
+}
+
+
+/**
+ * @brief Vega flux zero point in Jansky (Jy)
+ *
+ * @return QSpectralFluxDensity
+ */
+QSpectralFluxDensity Filter::get_Vega_zero_Jy(){
+        double c = 1e-8 * speed_of_light.to(meter / second);
+        double f = 1e5 / c * std::pow(this->get_lpivot().to(angstrom), 2) * this->get_Vega_zero_flux().to(flam);
+        return f * Jy;
+}
+
+/**
  * @brief Display some information on cout
  */
 void Filter::info(){
@@ -227,7 +330,7 @@ void Filter::info(){
     std::cout << "Filter Object information:\n"
             << "    name:                " << this->name << "\n"
             << "    detector type:       " << this->dtype << "\n"
-            << "    wavelength units:    " << " nm  (internally set)" << "\n"
+            << "    wavelength units:    " << "nm  (internally set)" << "\n"
             << "    central wavelength:  " << this->cl  << " nm" << "\n"
             << "    pivot wavelength:    " << this->lpivot << " nm" << "\n"
             << "    minimum wavelength:  " << this->lmin << " nm" << "\n"
@@ -235,7 +338,19 @@ void Filter::info(){
             << "    norm:                " << this->norm << "\n"
             << "    effective width:     " << this->width << " nm" << "\n"
             << "    fullwidth half-max:  " << this->fwhm  << " nm" << "\n"
-            << "    definition contains " << n_points << " points" << "\n";
+            << "    definition contains " << n_points << " points" << "\n"
+            << " \n"
+            << "  Zeropoints \n"
+            << "      Vega: " << this->get_Vega_zero_mag() << " mag" << "\n"
+            << "            " << this->get_Vega_zero_flux().to(flam) << " erg/s/cm^2/AA" << "\n"
+            << "            " << this->get_Vega_zero_Jy().to(Jy) << " Jy" << "\n"
+            << "        AB: " << this->get_AB_zero_mag() << " mag" << "\n"
+            << "            " << this->get_AB_zero_flux().to(flam) << " erg/s/cm^2/AA" << "\n"
+            << "            " << this->get_AB_zero_Jy().to(Jy) << " Jy" << "\n"
+            << "        ST: " << this->get_ST_zero_mag() << " mag" << "\n"
+            << "            " << this->get_ST_zero_flux().to(flam) << " erg/s/cm^2/AA" << "\n"
+            << "            " << this->get_ST_zero_Jy().to(Jy) << " Jy" << "\n"
+            << "\n";
 }
 
 /**
