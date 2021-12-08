@@ -56,8 +56,6 @@ std::cout << gaia_G;
 
 gaia_G.info();
 
-
-
 std::cout << "done.\n";
 return 0;
 
