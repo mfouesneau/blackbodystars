@@ -235,9 +235,10 @@ void Filter::calculate_sed_independent_properties(){
 /**
  * @brief AB magnitude zero point
  *
- * ABmag = -2.5 * log10(f_nu) - 48.60
- *          = -2.5 * log10(f_lamb) - 2.5 * log10(lpivot ** 2 / c) - 48.60
- *          = -2.5 * log10(f_lamb) - zpts
+ * \f[ mag_{AB} = -2.5 * log10(f_nu) - 48.60
+ *          = -2.5 \log_{10}(f_\lambda) - 2.5 * \log_{10}(\lambda_{pivot}^2 / c) - 48.60 \f]
+ *
+ * @return AB magnitude zero point
  */
 double Filter::get_AB_zero_mag(){
     double C1 = (this->wavelength_unit).to(angstrom);
@@ -249,7 +250,10 @@ double Filter::get_AB_zero_mag(){
 /**
  * @brief  AB flux zero point
  *
- * @return QSpectralFluxDensity
+ * Calculated as
+ * \f[ flux_{AB} = 10^{-0.4 * (mag_{AB})} \f]
+ *
+ * @return AB flux zero point
  */
 QSpectralFluxDensity Filter::get_AB_zero_flux(){
     return std::pow(10, -0.4 * this->get_AB_zero_mag()) * flam;
@@ -258,7 +262,12 @@ QSpectralFluxDensity Filter::get_AB_zero_flux(){
 /**
  * @brief AB flux zero point in Jansky (Jy)
  *
- * @return QSpectralFluxDensity
+ * Calculated as
+ * \f[ flux_{Jy} = \frac{10^5}{10^{-8} c } \lambda_{pivot}^2 flux_{AB} \f]
+ * where \f$c\f$ is speed of light in m/s, and \f$\lambda_{pivot}\f$ is the pivot wavelength in angstrom,
+ * and \f$flux_{AB}\f$ is the AB flux in flam.
+ *
+ * @return AB flux zero point in Jansky (Jy)
  */
 QSpectralFluxDensity Filter::get_AB_zero_Jy(){
         double c = 1e-8 * speed_of_light.to(meter / second);
@@ -268,6 +277,10 @@ QSpectralFluxDensity Filter::get_AB_zero_Jy(){
 
 /**
  * @brief ST magnitude zero point
+ *
+ * Set by definition to 21.1 mag
+ *
+ * @return ST magnitude zero point
  */
 double Filter::get_ST_zero_mag(){
     return 21.1;    // definition
@@ -276,7 +289,10 @@ double Filter::get_ST_zero_mag(){
 /**
  * @brief  ST flux zero point
  *
- * @return QSpectralFluxDensity
+ * Calculated as
+ * \f[ flux_{ST} = 10^{-0.4 * (mag_{ST})} \f]
+ *
+ * @return ST flux in flam
  */
 QSpectralFluxDensity Filter::get_ST_zero_flux(){
     return std::pow(10, -0.4 * this->get_ST_zero_mag()) * flam;
@@ -286,7 +302,12 @@ QSpectralFluxDensity Filter::get_ST_zero_flux(){
 /**
  * @brief ST flux zero point in Jansky (Jy)
  *
- * @return QSpectralFluxDensity
+ * Calculated as
+ * \f[ flux_{Jy} = \frac{10^5}{10^{-8} c } \lambda_{pivot}^2 flux_{ST} \f]
+ * where \f$c\f$ is speed of light in m/s, and \f$\lambda_{pivot}\f$ is the pivot wavelength in angstrom,
+ * and \f$flux_{ST}\f$ is the ST flux in flam.
+ *
+ * @return ST flux in Jy
  */
 QSpectralFluxDensity Filter::get_ST_zero_Jy(){
         double c = 1e-8 * speed_of_light.to(meter / second);
@@ -296,6 +317,8 @@ QSpectralFluxDensity Filter::get_ST_zero_Jy(){
 
 /**
  * @brief Vega magnitude zero point
+ *
+ * @return Vega magnitude zero point
  */
 double Filter::get_Vega_zero_mag(){
     return 0.;    // definition
@@ -304,7 +327,7 @@ double Filter::get_Vega_zero_mag(){
 /**
  * @brief  Vega flux zero point
  *
- * @return QSpectralFluxDensity
+ * @return flux of Vega in flam (erg/s/cm^2/Angstrom)
  */
 QSpectralFluxDensity Filter::get_Vega_zero_flux(){
     return std::pow(10, -0.4 * this->get_Vega_zero_mag()) * flam;
@@ -314,7 +337,12 @@ QSpectralFluxDensity Filter::get_Vega_zero_flux(){
 /**
  * @brief Vega flux zero point in Jansky (Jy)
  *
- * @return QSpectralFluxDensity
+ * Calculated as
+ * \f[ flux_{Jy} = \frac{10^5}{10^{-8} c } \lambda_{pivot}^2 flux_{Vega} \f]
+ * where \f$c\f$ is speed of light in m/s, and \f$\lambda_{pivot}\f$ is the pivot wavelength in angstrom,
+ * and \f$flux_{Vega}\f$ is the Vega flux in flam.
+ *
+ * @return flux of Vega in Jy
  */
 QSpectralFluxDensity Filter::get_Vega_zero_Jy(){
         double c = 1e-8 * speed_of_light.to(meter / second);
