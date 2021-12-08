@@ -161,7 +161,9 @@ mags = -2.5 * np.log10(fluxes / f.ST_zero_flux)
 
 ## Jansky definition
 
-The jansky (symbol $Jy$) is a non-SI unit of spectral flux density, it is equivalent to $10^{−26} W.m^{-2}.Hz^{-1}$ or $10^{-23} erg.s^{-1}.cm^{-2}.Å^{-1}$.
+The jansky (symbol Jy) is a non-SI unit of spectral flux density, it is equivalent to
+$10^{−26}.W.m^{-2}.Hz^{-1}$ or
+$10^{-23}.erg.s^{-1}.cm^{-2}.Å^{-1}$.
 
 ```python
 import numpy as np
