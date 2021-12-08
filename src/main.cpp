@@ -13,8 +13,10 @@
 #include "prettyprint.hpp"
 */
 #include <cpr/cpr.h>
-#include "votable.hpp"
+#include "cphot/votable.hpp"
 #include "cphot/filter.hpp"
+#include "cphot/io.hpp"
+
 
 std::string download_svo_filter(std::string id){
     cpr::Response r = cpr::Get(cpr::Url{"http://svo2.cab.inta-csic.es/theory/fps/getdata.php?format=ascii&id=Generic/Bessell_JHKLM.J"});

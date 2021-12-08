@@ -34,7 +34,7 @@
  *
  */
 #pragma once
-#include "rquantities.hpp"
+#include "cphot/rquantities.hpp"
 
 /**
  * Blackbody as a flux distribution as function

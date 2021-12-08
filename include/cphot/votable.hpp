@@ -157,7 +157,9 @@ namespace votable {
             std::map<std::string, Param> params;  ///< Table parameters
             std::vector<Field> fields;            ///< Table Fields
 
+            VOTable();
             VOTable(const std::string & input_filename);
+            void from_content(const std::string & content);
             size_t size();
             size_t n_columns();
 
@@ -174,12 +176,30 @@ namespace votable {
 
 
 /**
+ * Dummy Constructor
+ *
+ */
+VOTable::VOTable(){}
+
+/**
  * Constructor
  *
  * @param input_filename: XML file to parse
  */
 VOTable::VOTable(const std::string & input_filename){
     this->parse(input_filename);
+    this->setup_params();
+    this->setup_fields();
+}
+
+/**
+ * @brief Constructor
+ *
+ * @param c_str: XML file content to parse
+ */
+void VOTable::from_content(const std::string & content){
+    std::string json_str = xml2json(content.c_str());
+    this->document.Parse(json_str.c_str());
     this->setup_params();
     this->setup_fields();
 }

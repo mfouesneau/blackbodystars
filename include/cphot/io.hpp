@@ -13,14 +13,12 @@
 namespace cphot {
 
 /**
- * @brief Get the filter object from a VOTable file
+ * @brief Get the filter object
  *
- * @param vot_filename  path to the xml file
+ * @param vot  votable document
  * @return Filter object
  */
-Filter get_filter(const std::string& vot_filename){
-    // Read VOTable
-    votable::VOTable vot(vot_filename);
+Filter get_filter(votable::VOTable& vot){
     // Extract name
     std::string filter_name = std::regex_replace(
                                 vot.params["filterID"].value,
@@ -50,6 +48,18 @@ Filter get_filter(const std::string& vot_filename){
     return Filter(xt_wave, xt_transmit,
                   wavelength_unit, detector_type,
                   filter_name);
+}
+
+/**
+ * @brief Get the filter object from a VOTable file
+ *
+ * @param vot_filename  path to the xml file
+ * @return Filter object
+ */
+Filter get_filter(const std::string& vot_filename){
+    // Read VOTable
+    votable::VOTable vot(vot_filename);
+    return get_filter(vot);
 }
 
 }; // namespace cphot

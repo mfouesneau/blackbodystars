@@ -15,7 +15,7 @@
 #include <xtensor/xbuilder.hpp>
 #include <xtensor/xio.hpp>
 #include <xtensor/xview.hpp>
-#include "rquantities.hpp"
+#include "cphot/rquantities.hpp"
 #include "prettyprint.hpp"
 #include "blackbody.hpp"
 

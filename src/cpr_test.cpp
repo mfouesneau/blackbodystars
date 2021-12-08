@@ -6,6 +6,9 @@
  */
 #include <iostream>
 #include <cpr/cpr.h>
+#include "cphot/filter.hpp"
+#include "cphot/io.hpp"
+#include "cphot/votable.hpp"
 
 /**
  * @brief main interface to SVO data requests
@@ -24,5 +27,12 @@ std::string download_svo_filter(std::string id){
 
 
 int main(){
-   std::cout << download_svo_filter("2MASS/2MASS.H") << "\n";
+    const auto xml = download_svo_filter("GAIA/GAIA3.G");
+    std::cout << xml << "\n";
+
+    votable::VOTable vot;
+    vot.from_content(xml);
+    std::cout << vot << "\n";
+    auto filt = cphot::get_filter(vot);
+    filt.info();
 }
