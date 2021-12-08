@@ -25,6 +25,10 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(conanbuildinfo.cmake)  # Includes the contents of the conanbuildinfo.cmake file.
 conan_basic_setup()  # Prepares the CMakeList.txt for Conan.
 
+
+# CPR package in conan is broken, the following should be automatic.
+add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+
 # add local includes
 include_directories(
         "${PROJECT_SOURCE_DIR}/include"
@@ -50,6 +54,7 @@ target_link_libraries(blackbodystars
 target_link_libraries(test_cpr
         ${blas_libraries} ${lapack_libraries}
         ${CONAN_LIBS})
+
 
 # Where to install the targets --
 install(TARGETS blackbodystars
