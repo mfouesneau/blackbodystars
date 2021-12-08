@@ -1,5 +1,25 @@
 /**
- * @brief: Reading VOTABLEs
+ * @brief Reading VOTABLEs
+ *
+ * This package is a very first draft of a VOTABLE reader. It was intended to
+ * read small "simple" tables rapidly. It  does not make specific verifications
+ *
+ * VOTable supports a number of different serialization formats.
+ *
+ * TABLEDATA stores the data in pure XML, where the numerical values are written
+ * as human-readable strings.
+ *
+ * BINARY is a binary representation of the data, stored in the XML as an opaque
+ * base64-encoded blob.
+ *
+ * BINARY2 was added in VOTable 1.3, and is identical to “BINARY”, except that
+ * it explicitly records the position of missing values rather than identifying
+ * them by a special value.
+ *
+ * FITS stores the data in an external FITS file. This serialization is not
+ * supported
+ *
+ * Currently only the TABLEDATA is supported by this package
  *
  * version: 0.1a
  */
@@ -16,7 +36,7 @@ namespace votable {
 
     /**
     * @brief Store Table Parameter Attributes
-    * 
+    *
     */
     struct Param {
         std::string name;
@@ -30,7 +50,7 @@ namespace votable {
 
     /**
     * @brief Store Table Field and data
-    * 
+    *
     */
     struct Field {
         std::string name;
@@ -45,10 +65,10 @@ namespace votable {
 
     /**
     * @brief Store parsed data from VOTable with a non-string format
-    * 
+    *
     * Preserves the information from a field, but parses the data into T type
     * to be easily usable.
-    * 
+    *
     * @tparam T   data type
     */
     template <typename T>
@@ -140,7 +160,7 @@ namespace votable {
             VOTable(const std::string & input_filename);
             size_t size();
             size_t n_columns();
-        
+
             template <typename T> VOField<T> get(std::string field_name);
             template <typename T> VOField<T> get(size_t field_index);
 
@@ -166,7 +186,7 @@ VOTable::VOTable(const std::string & input_filename){
 
 /**
  * @brief Parse the xml file into a json document
- * 
+ *
  * @param input_filename file to parse
  */
 void VOTable::parse(const std::string & input_filename){
@@ -182,7 +202,7 @@ void VOTable::parse(const std::string & input_filename){
 
 /**
  * @brief Read the document PARAM elements
- * 
+ *
  * PARAM elements contain attributes of the VOTABLE
  * These are stored into `VOTable::params`
  */
@@ -206,7 +226,7 @@ void VOTable::setup_params(){
 
 /**
  * @brief Read the document FIELD and DATA elements
- * 
+ *
  * FIELD elements contain column description of the VOTABLE
  * These are stored into `VOTable::fields`
  *
@@ -214,7 +234,7 @@ void VOTable::setup_params(){
  * These are stored as strings in the `VOTable::fields::data` vectors
  * [Note: I do not know what happens with multi tables]
  */
-void VOTable::setup_fields(){ 
+void VOTable::setup_fields(){
 
     // Read in FIELD information
     const rapidjson::Value& where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["FIELD"];
@@ -251,7 +271,7 @@ void VOTable::setup_fields(){
 
 /**
  * @brief Size of the data table
- * 
+ *
  * @return size_t length of the data
  */
 size_t VOTable::size(){
@@ -260,7 +280,7 @@ size_t VOTable::size(){
 
 /**
  * @brief number of fields
- * 
+ *
  * @return size_t length of the fields
  */
 size_t VOTable::n_columns(){
@@ -268,13 +288,13 @@ size_t VOTable::n_columns(){
 }
 
 /**
- * @brief Retrieve field data 
- * 
- * @tparam T              type to parse the data into 
+ * @brief Retrieve field data
+ *
+ * @tparam T              type to parse the data into
  * @param field_name       name of the field
  * @return std::vector<T>  data vector
  */
-template <typename T> 
+template <typename T>
 VOField<T> VOTable::get(std::string field_name){
     //TODO: replace by correct index
     size_t match = -1;
@@ -291,21 +311,21 @@ VOField<T> VOTable::get(std::string field_name){
 };
 
 /**
- * @brief Retrieve field data 
- * 
- * @tparam T              type to parse the data into 
+ * @brief Retrieve field data
+ *
+ * @tparam T              type to parse the data into
  * @param field_index      index of the field
  * @return std::vector<T>  data vector
  */
-template <typename T> 
+template <typename T>
 VOField<T> VOTable::get(size_t field_index){
     size_t n = this->size();
     VOField<T> newfield;
     newfield.data.resize(n);
     const auto & field = this->fields[field_index];
     std::transform(
-        field.data.begin(), 
-        field.data.end(), 
+        field.data.begin(),
+        field.data.end(),
         newfield.data.begin(), [](std::string val) { return parseString<T>(val);});
     newfield.name = field.name;
     newfield.datatype = field.datatype;

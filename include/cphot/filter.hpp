@@ -20,8 +20,8 @@ using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
 
 /**
  * @brief Unit Aware Filter.
- * input spectra and output values have units to avoid mis-interpretation.  
- * 
+ * input spectra and output values have units to avoid mis-interpretation.
+ *
  * Note the usual (non SI) units of flux definitions:
  *       flam     = erg/s/cm**2/AA
  *       fnu      = erg/s/cm**2/Hz
@@ -38,8 +38,8 @@ class Filter {
         static constexpr double c = speed_of_light.to(angstrom / second);
         static constexpr double h = 6.62607015e-27;  // erg/s
 
-        //! wavelength of the filter stored in nm 
-        DMatrix wavelength_nm;       
+        //! wavelength of the filter stored in nm
+        DMatrix wavelength_nm;
         //! transmission of the passband
         DMatrix transmission;
         //! name of the filter
@@ -76,7 +76,7 @@ class Filter {
                const DMatrix& transmission,
                const QLength& wavelength_unit,
                const std::string dtype,
-               const std::string name); 
+               const std::string name);
         std::string get_name(){ return this->name;}
         void info();
         QLength get_leff();
@@ -92,7 +92,7 @@ class Filter {
 
 /**
  * @brief Construct a new Filter:: Filter object
- * 
+ *
  * @param wavelength       wavelength definition
  * @param transmission     transmission on the wavelength
  * @param wavelength_unit  units of the wavelength definition
@@ -123,15 +123,15 @@ Filter::Filter(const DMatrix& wavelength,
 
 /**
  * @brief Nice representation of Filter objects
- * 
+ *
  * @param os   stream to output the representation
  * @param F    Filter object
  * @return std::ostream&  same as os
  */
 std::ostream & operator<<(std::ostream &os,
                           Filter &F){
-    
-    os << "Filter: " << F.get_name() 
+
+    os << "Filter: " << F.get_name()
        << "\n";
     return os;
 }
@@ -139,7 +139,7 @@ std::ostream & operator<<(std::ostream &os,
 
 /**
  * @brief Calculate the various standard properties of a given filter.
- * 
+ *
  * These properties are e.g., fwhm, pivot wavelength.
  * Those that do not require to consider an SED such as Vega.
  */
@@ -192,28 +192,28 @@ void Filter::calculate_sed_independent_properties(){
     // the difference between the two wavelengths for which filter transmission is
     // half maximum
     //
-    // ..note:: 
+    // ..note::
     //      This calculation is not exact but rounded to the nearest passband data
     //      points
     double first = wavelength_nm[0];
     double last = wavelength_nm[-1];
     double thresh = transmission_max * 0.5;
     for (size_t i=0; i < wavelength_nm.size() - 1; ++i){
-        if((transmission[i+1] > thresh) and (transmission[i] <= thresh)){ 
-            first = wavelength_nm[i]; 
+        if((transmission[i+1] > thresh) and (transmission[i] <= thresh)){
+            first = wavelength_nm[i];
             break;
         }
     }
     for (size_t i=wavelength_nm.size(); i > 1; --i){
-        if((transmission[i-1] > thresh) and (transmission[i] <= thresh)){ 
-            last = wavelength_nm[i]; 
+        if((transmission[i-1] > thresh) and (transmission[i] <= thresh)){
+            last = wavelength_nm[i];
             break;
         }
     }
     this->fwhm = last - first;
 
     // leff = int (lamb * T * Vega dlamb) / int(T * Vega dlamb)
-    // TODO: need vega 
+    // TODO: need vega
 
     // lphot = int(lamb ** 2 * T * Vega dlamb) / int(lamb * T * Vega dlamb)
     // which we calculate as lphot = get_flux(lamb * vega) / get_flux(vega)
@@ -240,9 +240,9 @@ void Filter::info(){
 
 /**
  * @brief  Central wavelength
- * 
- * \f cl = \int \lambda * T(\lambda) d\lambda / \int T(\lambda) d\lambda \f
- * 
+ *
+ * \f[ \lambda_{cl} = \frac{\int \lambda T(\lambda) d\lambda}{\int T(\lambda) d\lambda}\f]
+ *
  * @return central wavelength in nm
  */
 QLength Filter::get_cl(){ return this->cl * this->wavelength_unit;}
@@ -251,34 +251,34 @@ QLength Filter::get_cl(){ return this->cl * this->wavelength_unit;}
  * @brief  Pivot wavelength in nm
  *
  * if photon detector:
- * \f \lambda_p^2 = \int \lambda * T(\lambda) d\lambda / \int T(\lambda) \dlambda / \lambda \f
+ * \f[ \lambda_p^2 = \frac{\int \lambda T(\lambda) d\lambda}{\int T(\lambda) d\lambda / \lambda} \f]
  *
  * if energy:
- * \f \lambda_p^2 = \int T(\lambda) d\lambda / \int T(\lambda) \dlambda / \lambda^2 \f
- * 
+ * \f[ \lambda_p^2 = \frac{\int T(\lambda) d\lambda}{\int T(\lambda) d\lambda / \lambda^2} \f]
+ *
  * @return pivot wavelength in nm
  */
 QLength Filter::get_lpivot(){ return this->lpivot * this->wavelength_unit;}
 
 /**
  * @brief the first λ value with a transmission at least 1% of maximum transmission
- * 
+ *
  * @return min wavelength in nm
  */
 QLength Filter::get_lmin(){ return this->lmin * this->wavelength_unit;}
 
 /**
  * @brief the last λ value with a transmission at least 1% of maximum transmission
- * 
+ *
  * @return max wavelength in nm
  */
 QLength Filter::get_lmax(){ return this->lmax * this->wavelength_unit;}
 
 /**
  * @brief the norm of the passband
- * 
- * \f norm = \int T(\lambda) d\lambda \f
- * 
+ *
+ * \f[ norm = \int T(\lambda) d\lambda \f]
+ *
  * @return norm
  */
 QLength Filter::get_norm(){ return this->norm; }
@@ -286,9 +286,9 @@ QLength Filter::get_norm(){ return this->norm; }
 /**
  * @brief  Effective width
  *
- * \f width = \int T(\lambda) d\lambda / \max(T(\lambda)) \f
- * 
- * @return width in nm 
+ * \f[ width = \frac{\int T(\lambda) d\lambda}{\max(T(\lambda))} \f]
+ *
+ * @return width in nm
  */
 QLength Filter::get_width(){ return this->width * this->wavelength_unit;}
 
@@ -299,29 +299,29 @@ QLength Filter::get_width(){ return this->width * this->wavelength_unit;}
  * ..note::
  *      This calculation is not exact but rounded to the nearest passband
  *      data points
- * 
- * @return fwhm in nm 
+ *
+ * @return fwhm in nm
  */
 QLength Filter::get_fwhm(){ return this->fwhm * this->wavelength_unit;}
 
 /**
- * @brief Photon distribution based effective wavelength. 
+ * @brief Photon distribution based effective wavelength.
  *
  * Defined as
- * \f \lambda_{phot} = \int\lambda^2 * T(\lambda) Vega(\lambda) d\lamba / \int(\lambda T(\lambda) Vega(\lambda) d\lambda) \f
- * 
+ * \f[ \lambda_{phot} = \frac{\int\lambda^2 T(\lambda) Vega(\lambda) d\lambda }{\int\lambda T(\lambda) Vega(\lambda) d\lambda} \f]
+ *
  * which we calculate as
- * \f \lambda_{phot} = get_flux(\lambda Vega(\lambda)) / get_flux(Vega(\lambda)) \f
- * 
- * @return QLength 
+ * \f[ \lambda_{phot} = \frac{get\_flux(\lambda Vega(\lambda))}{get\_flux(Vega(\lambda))} \f]
+ *
+ * @return QLength
  */
 QLength Filter::get_lphot(){ return this->lphot * this->wavelength_unit;}
 
 /**
  * @brief Effective wavelength
  *
- * \f \lambda_{eff} = \int \lambda T(\lambda) Vega(\lambda) d\lambda) / \int T(\lambda) Vega(\lambda) d\lambda) \f
- * 
+ * \f[ \lambda_{eff} = \frac{\int \lambda T(\lambda) Vega(\lambda) d\lambda)}{\int T(\lambda) Vega(\lambda) d\lambda)} \f]
+ *
  * @return Effective wavelenth
  */
 QLength Filter::get_leff(){ return this->leff * this->wavelength_unit;}
@@ -329,7 +329,7 @@ QLength Filter::get_leff(){ return this->leff * this->wavelength_unit;}
 
 /**
  * @brief Get the filter object from a VOTable file
- * 
+ *
  * @param vot_filename  path to the xml file
  * @return Filter object
  */
@@ -338,12 +338,12 @@ Filter get_filter(const std::string& vot_filename){
     votable::VOTable vot(vot_filename);
     // Extract name
     std::string filter_name = std::regex_replace(
-                                vot.params["filterID"].value, 
+                                vot.params["filterID"].value,
                                 std::regex("/"),
                                 "_"
                                 );
     //extract detector type
-    std::string detector_type = (parseString<int>(vot.params["DetectorType"].value) == 0) ? 
+    std::string detector_type = (parseString<int>(vot.params["DetectorType"].value) == 0) ?
                                 "energy" : "photon";
 
     // extract wavelength and units
@@ -362,8 +362,8 @@ Filter get_filter(const std::string& vot_filename){
     DMatrix xt_wave = xt::adapt(wave.data, shape);
     DMatrix xt_transmit = xt::adapt(transmit.data, shape);
 
-    return Filter(xt_wave, xt_transmit, 
-                  wavelength_unit, detector_type, 
+    return Filter(xt_wave, xt_transmit,
+                  wavelength_unit, detector_type,
                   filter_name);
 }
 
