@@ -322,7 +322,11 @@ constexpr QLength rsun = 6.955e8 * meter;
 constexpr QLength Rsun = rsun;
 constexpr QEnergy erg = 1e-7 * joule;
 constexpr QFlux lsun = 3.839e26 * watt;
+
 constexpr QSpectralFluxDensity flam = erg / second / centimetre2 / angstrom;
+// constexpr QSpectralFluxDensity jansky = 1e-26 * watt / (meter * meter) / Hz;
+constexpr QSpectralFluxDensity jansky = 1e-23 * erg / second/ centimetre2 / angstrom;
+constexpr QSpectralFluxDensity Jy = jansky;
 
 
 
