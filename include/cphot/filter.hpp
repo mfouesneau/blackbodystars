@@ -126,7 +126,7 @@ Filter::Filter(const DMatrix& wavelength,
     this->transmission = transmission;
 
     if ((dtype.compare("photon") == 0) ||
-        (dtype.compare("energy"))){
+        (dtype.compare("energy") == 0)){
         this->dtype = dtype;
     } else {
         throw std::runtime_error("only photon and energy allowed");
