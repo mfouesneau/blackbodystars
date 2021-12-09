@@ -32,7 +32,6 @@ int main(){
 
     votable::VOTable vot;
     vot.from_content(xml);
-    std::cout << vot << "\n";
     auto filt = cphot::get_filter(vot);
     filt.info();
 }
