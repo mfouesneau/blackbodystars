@@ -5,12 +5,9 @@
  * @date 2021-11-23
  *
  */
-#include <iostream>
-#include <exception>
-#include <iostream>
+#include "testlib.hpp"
 #include <cmath>
 #include <ratio>
-#include <stdexcept>
 #include <xtensor/xarray.hpp>
 #include <xtensor/xbuilder.hpp>
 #include <xtensor/xio.hpp>
@@ -18,13 +15,6 @@
 #include "cphot/rquantities.hpp"
 #include "prettyprint.hpp"
 #include "blackbody.hpp"
-
-
-template<typename T>
-void EXPECT_NEAR(const T& T1, const T& T2, const T& T3)
-{
-    if (std::abs(T1 - T2) > T3) {throw std::logic_error("EXPECT_NEAR failed.");}
-}
 
 
 /**
