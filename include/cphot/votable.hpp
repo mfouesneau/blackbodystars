@@ -136,7 +136,7 @@ namespace votable {
         if (v.data.size() > 0){
             os << "     [ ";
             for (size_t idx=0; idx < 5; ++idx) {os << v.data[idx] << ", ";}
-            os << "...";
+            os << "..., ";
             for (size_t idx=v.data.size() - 5; idx < v.data.size() - 1; ++idx) {os << v.data[idx] << ", ";}
             os << v.data[v.data.size() - 1] << "]\n";
         }
