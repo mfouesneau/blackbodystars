@@ -24,12 +24,12 @@
  * version: 0.1a
  */
 #pragma once
-#include "xml2json.hpp"
-#include "rapidjson/document.h"
-#include <string>
-#include <map>
-#include "prettyprint.hpp"
 #include "helpers.hpp"
+#include "prettyprint.hpp"
+#include "rapidjson/document.h"
+#include "xml2json.hpp"
+#include <map>
+#include <string>
 
 
 namespace votable {
@@ -91,10 +91,10 @@ namespace votable {
                             const Param &v)
     {
         os << "Param: " << v.name << "= "
-        << v.value  << " [" << v.unit << "]\n"
-        << "     DTYPE=" << v.datatype << "\n"
-        << "     UCD=" << v.ucd << "\n"
-        << "     DESCRIPTION=" << v.description << "\n";
+           << v.value  << " [" << v.unit << "]\n"
+           << "     DTYPE=" << v.datatype << "\n"
+           << "     UCD=" << v.ucd << "\n"
+           << "     DESCRIPTION=" << v.description << "\n";
         return os;
     }
 
@@ -106,10 +106,10 @@ namespace votable {
                             const Field &v)
     {
         os << "Field: " << v.name << "length="
-        << v.data.size()  << " [" << v.unit << "]\n"
-        << "     DTYPE=" << v.datatype << "\n"
-        << "     UCD=" << v.ucd << "\n"
-        << "     DESCRIPTION=" << v.description << "\n";
+           << v.data.size()  << " [" << v.unit << "]\n"
+           << "     DTYPE=" << v.datatype << "\n"
+           << "     UCD=" << v.ucd << "\n"
+           << "     DESCRIPTION=" << v.description << "\n";
         if (v.data.size() > 0){
             os << "     [ ";
             for (size_t idx=0; idx < 5; ++idx) {os << v.data[idx] << ", ";}
@@ -129,10 +129,10 @@ namespace votable {
                             const VOField<T> &v)
     {
         os << "Field: " << v.name << "length="
-        << v.data.size()  << " [" << v.unit << "]\n"
-        << "     DTYPE=" << v.datatype << "\n"
-        << "     UCD=" << v.ucd << "\n"
-        << "     DESCRIPTION=" << v.description << "\n";
+           << v.data.size()  << " [" << v.unit << "]\n"
+           << "     DTYPE=" << v.datatype << "\n"
+           << "     UCD=" << v.ucd << "\n"
+           << "     DESCRIPTION=" << v.description << "\n";
         if (v.data.size() > 0){
             os << "     [ ";
             for (size_t idx=0; idx < 5; ++idx) {os << v.data[idx] << ", ";}
