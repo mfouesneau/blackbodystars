@@ -49,8 +49,8 @@ std::cout << col << "\n";
 //std::cout << doc.GetColumnNames() << "\n";
 */
 
-// Seg fault in the following
-// auto data = download_svo_filter("Generic/Bessell_JHKLM.J");
+// cphot::Filter Bessell_J = cphot::download_svo_filter("Generic/Bessell_JHKLM.J");
+// Bessell_J.info();
 
 cphot::Filter gaia_G = cphot::get_filter("data/passbands/GAIA.GAIA3.G.xml");
 
