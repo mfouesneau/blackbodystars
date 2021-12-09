@@ -5,9 +5,10 @@
  *
  */
 #pragma once
-#include <cphot/filter.hpp>
-#include <cphot/votable.hpp>
-#include <cphot/rquantities.hpp>
+#include "filter.hpp"
+#include "votable.hpp"
+#include "rquantities.hpp"
+#include <cpr/cpr.h>
 
 
 namespace cphot {
@@ -60,6 +61,20 @@ Filter get_filter(const std::string& vot_filename){
     // Read VOTable
     votable::VOTable vot(vot_filename);
     return get_filter(vot);
+}
+
+/**
+ * @brief main interface to SVO data requests
+ *
+ * @param id              passband id
+ * @return std::string    data content
+ */
+cphot::Filter download_svo_filter(const std::string & id){
+    cpr::Response r = cpr::Get(cpr::Url{"http://svo2.cab.inta-csic.es/theory/fps/fps.php"},
+                               cpr::Parameters{{"ID", id}});
+    votable::VOTable vot;
+    vot.from_content(r.text);
+    return cphot::get_filter(vot);
 }
 
 }; // namespace cphot
