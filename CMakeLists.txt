@@ -41,20 +41,11 @@ include_directories(
 add_executable(blackbodystars
         ${PROJECT_SOURCE_DIR}/src/main.cpp)
 
-add_executable(test_cpr
-        ${PROJECT_SOURCE_DIR}/src/cpr_test.cpp)
-
-
 # Link the executables to external libraries
 # -------------------------------------------
 target_link_libraries(blackbodystars
         ${blas_libraries} ${lapack_libraries}
         ${CONAN_LIBS})
-
-target_link_libraries(test_cpr
-        ${blas_libraries} ${lapack_libraries}
-        ${CONAN_LIBS})
-
 
 # Where to install the targets --
 install(TARGETS blackbodystars
@@ -71,12 +62,22 @@ enable_testing()
 add_executable(test_main
         ${PROJECT_SOURCE_DIR}/tests/test_main.cpp)
 
+add_executable(test_cphot
+        ${PROJECT_SOURCE_DIR}/tests/test_cphot.cpp)
+
 target_link_libraries(test_main
+        ${blas_libraries} ${lapack_libraries}
+        ${CONAN_LIBS})
+
+target_link_libraries(test_cphot
         ${blas_libraries} ${lapack_libraries}
         ${CONAN_LIBS})
 
 add_test(NAME example_tests
          COMMAND test_main)
+
+add_test(NAME cphot_tests
+         COMMAND test_cphot)
 
 # Documentation
 # first we indicate the documentation build as an option
