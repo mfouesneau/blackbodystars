@@ -80,11 +80,11 @@ class Filter {
         void info();
 
         std::string get_name(){ return this->name;}
+        double get_norm();
         QLength get_leff();
         QLength get_lphot();
         QLength get_fwhm();
         QLength get_width();
-        QLength get_norm();
         QLength get_lmax();
         QLength get_lmin();
         QLength get_lpivot();
@@ -424,7 +424,7 @@ QLength Filter::get_lmax(){ return this->lmax * this->wavelength_unit;}
  *
  * @return norm
  */
-QLength Filter::get_norm(){ return this->norm; }
+double Filter::get_norm(){ return this->norm; }
 
 /**
  * @brief  Effective width
