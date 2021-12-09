@@ -228,20 +228,24 @@ void VOTable::parse(const std::string & input_filename){
  */
 void VOTable::setup_params(){
 
-    // read in the document PARAMs
-    const rapidjson::Value& where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["PARAM"];
-    for (const auto& v : where.GetArray()){
-        Param p;
-        auto name = v["@name"].GetString();
-        p.name = name;
-        p.datatype = v["@datatype"].GetString();
-        p.value = v["@value"].GetString();
-        if (v.HasMember("@ucd")) {p.ucd = v["@ucd"].GetString();}
-        if (v.HasMember("@ytype")) {p.utype = v["@utype"].GetString();}
-        if (v.HasMember("@unit")) {p.unit = v["@unit"].GetString();}
-        if (v.HasMember("@DESCRIPTION")) {p.description = v["@DESCRIPTION"].GetString(); }
-        this->params[name] = p;
+    if (!this->document["VOTABLE"]["RESOURCE"]["TABLE"].HasMember("PARAM")){
+        std::cerr << "No PARAM elements found in VOTABLE\n";
+        return;
     }
+        // read in the document PARAMs
+        const rapidjson::Value& where = this->document["VOTABLE"]["RESOURCE"]["TABLE"]["PARAM"];
+        for (const auto& v : where.GetArray()){
+            Param p;
+            auto name = v["@name"].GetString();
+            p.name = name;
+            p.datatype = v["@datatype"].GetString();
+            p.value = v["@value"].GetString();
+            if (v.HasMember("@ucd")) {p.ucd = v["@ucd"].GetString();}
+            if (v.HasMember("@ytype")) {p.utype = v["@utype"].GetString();}
+            if (v.HasMember("@unit")) {p.unit = v["@unit"].GetString();}
+            if (v.HasMember("@DESCRIPTION")) {p.description = v["@DESCRIPTION"].GetString(); }
+            this->params[name] = p;
+        }
 }
 
 /**
