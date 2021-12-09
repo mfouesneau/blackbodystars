@@ -21,13 +21,13 @@ std::string download_svo_filter(std::string id){
                                cpr::Parameters{{"ID", id}});
 
     std::cout << "\n URL: " << r.url << std::endl;
-    std::cout << "\n Content: \n" << r.text << std::endl;
     return r.text;
 }
 
 
 int main(){
-    const auto xml = download_svo_filter("GAIA/GAIA3.G");
+    //const auto xml = download_svo_filter("GAIA/GAIA3.G");
+    const auto xml = download_svo_filter("2MASS/2MASS.H");
     std::cout << xml << "\n";
 
     votable::VOTable vot;
