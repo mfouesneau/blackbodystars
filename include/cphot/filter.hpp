@@ -385,12 +385,12 @@ QSpectralFluxDensity Filter::get_Vega_zero_Jy(){
  *
  * - for photon detectors:
  * \f[
- * f_\lambda = \frac{int \lambda T(\lambda) f_\lambda d\lambda}{int \lambda T(\lambda) d\lambda}
+ * f_\lambda = \frac{\int \lambda T(\lambda) f_\lambda d\lambda}{\int \lambda T(\lambda) d\lambda}
  * \f]
  *
  * - for energy detectors:
  * \f[
- * f_\lambda = \frac{int T(\lambda) f_\lambda d\lambda}{int T(\lambda) d\lambda}
+ * f_\lambda = \frac{\int T(\lambda) f_\lambda d\lambda}{\int T(\lambda) d\lambda}
  * \f]
  *
  * @param filt              passband object
@@ -568,9 +568,6 @@ QLength Filter::get_fwhm(){ return this->fwhm * this->wavelength_unit;}
  *
  * Defined as
  * \f[ \lambda_{phot} = \frac{\int\lambda^2 T(\lambda) Vega(\lambda) d\lambda }{\int\lambda T(\lambda) Vega(\lambda) d\lambda} \f]
- *
- * which one can also calculate as
- * \f[ \lambda_{phot} = \frac{get\_flux(\lambda Vega(\lambda))}{get\_flux(Vega(\lambda))} \f]
  *
  * @return QLength
  */
