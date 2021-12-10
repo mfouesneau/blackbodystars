@@ -47,6 +47,11 @@ void test_svo_photon_dtype(){
     EXPECT_NEAR(filt.get_ST_zero_flux().to(flam), 3.63078e-09, 1e-14);
     EXPECT_NEAR(filt.get_ST_zero_Jy().to(Jy), 4681.914826, 1e-5);
 
+    std::cout << "  Vega zero points" << std::endl;
+    EXPECT_NEAR(filt.get_Vega_zero_mag(), 21.50233318269791, 1e-5);
+    EXPECT_NEAR(filt.get_Vega_zero_flux().to(flam), 2.506494332299632e-09, 1e-14);
+    EXPECT_NEAR(filt.get_Vega_zero_Jy().to(Jy), 3232.140533127787, 1e-5);
+
 }
 
 void test_svo_energy_dtype(){
@@ -79,7 +84,14 @@ void test_svo_energy_dtype(){
     EXPECT_NEAR(filt.get_ST_zero_mag(), 21.1, 1e-15);
     EXPECT_NEAR(filt.get_ST_zero_flux().to(flam), 3.63078e-09, 1e-14);
     EXPECT_NEAR(filt.get_ST_zero_Jy().to(Jy), 32802.521598, 1e-5);
+
+    std::cout << "  Vega zero points" << std::endl;
+    EXPECT_NEAR(filt.get_Vega_zero_mag(), 24.85379094542596, 1e-5);
+    EXPECT_NEAR(filt.get_Vega_zero_flux().to(flam), 1.14415173060345e-10, 1e-14);
+    EXPECT_NEAR(filt.get_Vega_zero_Jy().to(Jy), 1033.691278249937, 1e-5);
 }
+
+
 
 
 int main() {

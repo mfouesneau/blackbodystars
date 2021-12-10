@@ -13,7 +13,8 @@
 
 
 int main(){
-    std::string filter_id = "2MASS/2MASS.H";
+    // std::string filter_id = "2MASS/2MASS.H";
+    std::string filter_id = "Gaia/Gaia3.G";
     cphot::Filter filt = cphot::download_svo_filter(filter_id);
     filt.info();
 
@@ -25,8 +26,6 @@ int main(){
     double flux_flam_v2 = filt.get_flux(v2.get_wavelength(nm), v2.get_flux(flam), nm, flam).to(flam);
     std::cout << "Vega zero points for filter: " << filter_id << "\n"
               <<  flux_flam_v2 << " flam\n"
-              << -2.5 * std::log10(flux_flam_v2) << " mag\n";
-
-
-
+              << -2.5 * std::log10(flux_flam_v2) << " mag\n"
+              << -2.5 * std::log10(flux_flam_v2) - filt.get_Vega_zero_mag() << " vega mag\n";
 }
