@@ -102,11 +102,12 @@ class Filter {
         QSpectralFluxDensity get_Vega_zero_flux();
         QSpectralFluxDensity get_Vega_zero_Jy();
 
-        DMatrix get_wavelength() {return this->wavelength_nm;};
-        DMatrix get_wavelength(const QLength& in) {return this->wavelength_nm * nm.to(in);};
-        DMatrix get_transmission() {return this->transmission;};
+        DMatrix get_wavelength();
+        DMatrix get_wavelength(const QLength& in);
+        DMatrix get_transmission();
 
-        bool is_photon_type() {return (this->dtype.compare("photon") == 0);}
+        bool is_photon_type();
+
         QSpectralFluxDensity get_flux(const DMatrix& wavelength,
                                       const DMatrix& flux,
                                       const QLength& wavelength_unit,
@@ -537,5 +538,43 @@ QLength Filter::get_lphot(){ return this->lphot * this->wavelength_unit;}
  * @return Effective wavelenth
  */
 QLength Filter::get_leff(){ return this->leff * this->wavelength_unit;}
+
+/**
+ * @brief Get the wavelength in nm
+ *
+ * @return wavelegnth in nm
+ */
+DMatrix Filter::get_wavelength() {
+    return this->wavelength_nm;
+}
+
+/**
+ * @brief Get the wavelength in requested units
+ *
+ * @param in  units to convert to
+ * @return  wavelegnth in requested units
+ */
+DMatrix Filter::get_wavelength(const QLength& in) {
+    return this->wavelength_nm * nm.to(in);
+}
+
+/**
+ * @brief Get the transmission
+ *
+ * @return Transmission (unitless)
+ */
+DMatrix Filter::get_transmission() {
+    return this->transmission;
+}
+
+/**
+ * @brief Check the type of the detector
+ *
+ * @return true   photon
+ * @return false  energy
+ */
+bool Filter::is_photon_type() {
+    return (this->dtype.compare("photon") == 0);
+}
 
 }; // namespace cphot

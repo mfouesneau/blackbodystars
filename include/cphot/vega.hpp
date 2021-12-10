@@ -33,10 +33,10 @@ class Vega {
              const QSpectralFluxDensity& flux_unit);
         Vega();
 
-        DMatrix get_wavelength() {return this->wavelength_nm;};
-        DMatrix get_wavelength(const QLength& in) {return this->wavelength_nm * nm.to(in);};
-        DMatrix get_flux() {return this->flux_flam;};
-        DMatrix get_flux(const QSpectralFluxDensity& in) {return this->flux_flam * flam.to(in);};
+        DMatrix get_wavelength();
+        DMatrix get_wavelength(const QLength& in);
+        DMatrix get_flux();
+        DMatrix get_flux(const QSpectralFluxDensity& in);
 
     private:
         DMatrix wavelength_nm;    ///< Wavelength in nm
@@ -107,6 +107,44 @@ Vega vega_from_votable(const std::string& infile){
 
     Vega v(wave.data, flux.data, wavelength_unit, flux_unit);
     return v;
+}
+
+/**
+ * @brief Get the internal wavelength in nm
+ *
+ * @return Vega wavelength in nm
+ */
+DMatrix Vega::get_wavelength() {
+    return this->wavelength_nm;
+}
+
+/**
+ * @brief Get the internal wavelength in requested units
+ *
+ * @param in  requested units for the wavelength
+ * @return Vega wavelength units of in
+ */
+DMatrix Vega::get_wavelength(const QLength& in) {
+    return this->wavelength_nm * nm.to(in);
+}
+
+/**
+ * @brief Get the internal flux in flam
+ *
+ * @return Vega flux in flam
+ */
+DMatrix Vega::get_flux() {
+    return this->flux_flam;
+}
+
+/**
+ * @brief Get the internal flux in requested units
+ *
+ * @param in  requested units for the flux
+ * @return Vega flux units of in
+ */
+DMatrix Vega::get_flux(const QSpectralFluxDensity& in) {
+    return this->flux_flam * flam.to(in);
 }
 
 } // namespace cphot
