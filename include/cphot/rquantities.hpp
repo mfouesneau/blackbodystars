@@ -7,6 +7,7 @@
 #include <ostream>
 #include <string.h>
 #include <string_view>
+#include <map>
 
 /*
  references in SI units
@@ -538,3 +539,62 @@ std::ostream &operator<<(std::ostream &os, QFlux rhs){
     os << rhs.getValue();
     return os;
 }
+
+
+namespace units {
+    /**
+     * convenient mappers
+     */
+
+    /**
+     * @brief str aliases to length units
+     */
+    const std::map<std::string, QLength> length_mapper {
+        {"Angstrom", angstrom},
+        {"AA", angstrom},
+        {"angstrom", angstrom},
+        {"Nanometer", nm},
+        {"nanometer", nm},
+        {"nm", nm},
+        {"meter", meter},
+        {"metre", meter},
+        {"m", meter},
+        {"cm", centimetre},
+        {"centimeter", centimetre},
+        {"mm", millimetre},
+        {"millimeter", millimetre},
+        {"km", kilometre},
+        {"kilometer", kilometre},
+        {"micrometer", micrometre},
+        {"micron", micrometre},
+        {"um", micrometre},
+        };
+
+    /**
+     * @brief str aliases to spectral flux density units
+     */
+    const std::map<std::string, QSpectralFluxDensity> spectralflux_mapper {
+        {"flam", flam},
+        {"erg/second/centimetre2/angstrom", flam},
+        {"erg/second/centimetre**2/angstrom", flam},
+        {"erg/second/centimetre^2/angstrom", flam},
+        {"Jy", Jy},
+        {"jansky", Jy},
+    };
+
+    /**
+     * @brief find length units from a string
+     * @return QLength unit
+     */
+    QLength parse_length(const std::string& str) {
+        return length_mapper.at(str);
+    }
+
+    /**
+     * @brief find length units from a string
+     * @return QLength unit
+     */
+    QSpectralFluxDensity parse_spectralflux(const std::string& str) {
+        return spectralflux_mapper.at(str);
+    }
+} // namespace units
