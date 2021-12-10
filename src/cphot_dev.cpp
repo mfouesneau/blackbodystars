@@ -17,15 +17,6 @@ int main(){
     cphot::Filter filt = cphot::download_svo_filter(filter_id);
     filt.info();
 
-    cphot::Vega v = cphot::vega_from_votable("vega.votable");
-    std::cout << v.get_wavelength()[0] << " nm  "
-              << v.get_wavelength(angstrom)[0] << " AA\n";
-
-    double flux_flam = filt.get_flux(v.get_wavelength(nm), v.get_flux(flam), nm, flam).to(flam);
-    std::cout << "Vega zero points for filter: " << filter_id << "\n"
-              <<  flux_flam << " flam\n"
-              << -2.5 * std::log10(flux_flam) << " mag\n";
-
     cphot::Vega v2 = cphot::Vega(
         cphot_vega::wavelength_nm,
         cphot_vega::flux_flam,
