@@ -6,49 +6,34 @@
  */
 #include <iostream>
 #include <cphot/io.hpp>
+#include <cphot/rquantities.hpp>
 #include <cphot/votable.hpp>
+#include <cphot/vega.hpp>
 
-
-/**
- * @brief Interface to Vega reference data
- *
- *   Class that handles vega spectrum and references.  This class know where to
- *   find the Vega synthetic spectrum (Bohlin 2007) in order to compute fluxes
- *   and magnitudes in given filters
- *
- *   Attributes
- *   ----------
- *   source: str
- *       filename of the vega library
- *   data: SimpleTable
- *       data table
- *   units: tuple
- *       detected units from file header
- *   wavelength: array
- *       wavelength (with units when found)
- *   flux: array
- *       flux(wavelength) values (with units when provided)
- *
- **/
-class Vega {
-    public:
-        Vega(const std::string& source);
-        Vega();
-
-};
-
-Vega::Vega() {
-}
-
-Vega::Vega(const std::string& source) {
-}
 
 
 int main(){
-    cphot::Filter filt = cphot::download_svo_filter("2MASS/2MASS.H");
+    std::string filter_id = "2MASS/2MASS.H";
+    cphot::Filter filt = cphot::download_svo_filter(filter_id);
     filt.info();
 
-    votable::VOTable vega("vega.vot");
-    std::cout << vega << std::endl;
+    cphot::Vega v = cphot::vega_from_votable("vega.votable");
+    std::cout << v.get_wavelength()[0] << " nm  "
+              << v.get_wavelength(angstrom)[0] << " AA\n";
+
+    double flux_flam = filt.get_flux(v.get_wavelength(nm), v.get_flux(flam), nm, flam).to(flam);
+    std::cout << "Vega zero points for filter: " << filter_id << "\n"
+              <<  flux_flam << " flam\n"
+              << -2.5 * std::log10(flux_flam) << " mag\n";
+
+    cphot::Vega v2 = cphot::Vega(
+        cphot_vega::wavelength_nm,
+        cphot_vega::flux_flam,
+        nm, flam);
+
+    double flux_flam_v2 = filt.get_flux(v2.get_wavelength(nm), v2.get_flux(flam), nm, flam).to(flam);
+    std::cout << "Vega zero points for filter: " << filter_id << "\n"
+              <<  flux_flam_v2 << " flam\n"
+              << -2.5 * std::log10(flux_flam_v2) << " mag\n";
 
 }

@@ -41,14 +41,21 @@ include_directories(
 add_executable(blackbodystars
         ${PROJECT_SOURCE_DIR}/src/main.cpp)
 
+add_executable(cphot_dev
+        ${PROJECT_SOURCE_DIR}/src/cphot_dev.cpp)
+
 # Link the executables to external libraries
 # -------------------------------------------
 target_link_libraries(blackbodystars
         ${blas_libraries} ${lapack_libraries}
         ${CONAN_LIBS})
 
+target_link_libraries(cphot_dev
+        ${blas_libraries} ${lapack_libraries}
+        ${CONAN_LIBS})
+
 # Where to install the targets --
-install(TARGETS blackbodystars
+install(TARGETS blackbodystars cphot_dev
         CONFIGURATIONS runtime
         RUNTIME DESTINATION bin
         )
