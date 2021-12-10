@@ -113,6 +113,10 @@ class Filter {
                                       const DMatrix& flux,
                                       const QLength& wavelength_unit,
                                       const QSpectralFluxDensity& flux_unit);
+
+        Filter reinterp(const DMatrix& new_wavelength_nm);
+        Filter reinterp(const DMatrix& new_wavelength,
+                        const QLength& new_wavelength_unit);
 };
 
 /**
@@ -238,10 +242,16 @@ void Filter::calculate_sed_independent_properties(){
     this->fwhm = last - first;
 
     // leff = int (lamb * T * Vega dlamb) / int(T * Vega dlamb)
-    // TODO: need vega
+    auto vega = Vega();
+    const DMatrix& vega_wavelength = vega.get_wavelength(nm);
+    const DMatrix& vega_flux = vega.get_flux(flam);
+    auto vega_T = xt::interp(vega_wavelength, this->get_wavelength(nm), this->get_transmission(), 0., 0.);
+    this->leff =  xt::trapz(vega_wavelength * vega_T * vega_flux, vega_wavelength)[0] /
+                  xt::trapz(vega_T * vega_flux, vega_wavelength)[0];
 
     // lphot = int(lamb ** 2 * T * Vega dlamb) / int(lamb * T * Vega dlamb)
-    // which we calculate as lphot = get_flux(lamb * vega) / get_flux(vega)
+    this->lphot = xt::trapz(xt::square(vega_wavelength) * vega_T * vega_flux, vega_wavelength)[0] /
+                  xt::trapz(vega_wavelength * vega_T * vega_flux, vega_wavelength)[0];
 }
 
 /**
@@ -427,21 +437,51 @@ QSpectralFluxDensity Filter::get_flux(
 }
 
 /**
+ * @brief New filter interpolated to match a wavelegnth definition
+ *
+ * @param new_wavelength_nm    wavelength definition in nm
+ * @return new filter interpolated to match the new wavelength definition
+ */
+Filter Filter::reinterp(const DMatrix& new_wavelength_nm){
+    const DMatrix& filt_wave = this->get_wavelength();
+    const DMatrix& filt_trans = this->get_transmission();
+    auto new_trans = xt::interp(new_wavelength_nm, filt_wave, filt_trans, 0., 0.);
+    return Filter(new_wavelength_nm, new_trans, nm, this->dtype, this->name);
+}
+
+/**
+ * @brief New filter interpolated to match a wavelegnth definition
+ *
+ * @param new_wavelength    wavelength definition
+ * @param new_wavelength_unit  wavelength unit
+ * @return new filter interpolated to match the new wavelength definition
+ */
+Filter Filter::reinterp(const DMatrix& new_wavelength, const QLength& new_wavelength_unit){
+    const DMatrix& filt_wave = this->get_wavelength(new_wavelength_unit);
+    const DMatrix& filt_trans = this->get_transmission();
+    auto new_trans = xt::interp(new_wavelength, filt_wave, filt_trans, 0., 0.);
+    return Filter(new_wavelength, new_trans, new_wavelength_unit,
+                  this->dtype, this->name);
+}
+
+/**
  * @brief Display some information on cout
  */
 void Filter::info(){
     size_t n_points = this->transmission.size();
     std::cout << "Filter Object information:\n"
-            << "    name:                " << this->name << "\n"
-            << "    detector type:       " << this->dtype << "\n"
-            << "    wavelength units:    " << "nm  (internally set)" << "\n"
-            << "    central wavelength:  " << this->cl  << " nm" << "\n"
-            << "    pivot wavelength:    " << this->lpivot << " nm" << "\n"
-            << "    minimum wavelength:  " << this->lmin << " nm" << "\n"
-            << "    maximum wavelength:  " << this->lmax << " nm" << "\n"
-            << "    norm:                " << this->norm << "\n"
-            << "    effective width:     " << this->width << " nm" << "\n"
-            << "    fullwidth half-max:  " << this->fwhm  << " nm" << "\n"
+            << "    name:                 " << this->name << "\n"
+            << "    detector type:        " << this->dtype << "\n"
+            << "    wavelength units:     " << "nm  (internally set)" << "\n"
+            << "    central wavelength:   " << this->cl  << " nm" << "\n"
+            << "    pivot wavelength:     " << this->lpivot << " nm" << "\n"
+            << "    effective wavelength: " << this->leff << " nm" << "\n"
+            << "    photon wavelength:    " << this->lphot << " nm" << "\n"
+            << "    minimum wavelength:   " << this->lmin << " nm" << "\n"
+            << "    maximum wavelength:   " << this->lmax << " nm" << "\n"
+            << "    norm:                 " << this->norm << "\n"
+            << "    effective width:      " << this->width << " nm" << "\n"
+            << "    fullwidth half-max:   " << this->fwhm  << " nm" << "\n"
             << "    definition contains " << n_points << " points" << "\n"
             << " \n"
             << "  Zeropoints \n"
@@ -529,7 +569,7 @@ QLength Filter::get_fwhm(){ return this->fwhm * this->wavelength_unit;}
  * Defined as
  * \f[ \lambda_{phot} = \frac{\int\lambda^2 T(\lambda) Vega(\lambda) d\lambda }{\int\lambda T(\lambda) Vega(\lambda) d\lambda} \f]
  *
- * which we calculate as
+ * which one can also calculate as
  * \f[ \lambda_{phot} = \frac{get\_flux(\lambda Vega(\lambda))}{get\_flux(Vega(\lambda))} \f]
  *
  * @return QLength
