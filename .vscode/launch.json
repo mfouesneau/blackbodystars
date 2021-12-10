@@ -33,6 +33,22 @@
           "osx": {
             "MIMode": "lldb"
           },
+        },
+        { "type": "cppdbg",
+          "request": "launch",
+          "name": "cppdbg: cphot_dev",
+          "program": "${workspaceRoot}/bin/cphot_dev",
+          "args": [],
+          "cwd": "${workspaceRoot}",
+          "valuesFormatting": "parseText",
+          "preLaunchTask": "make",
+          "linux": {
+            "MIMode": "gdb",
+            //"miDebuggerPath": "/usr/bin/gdb"
+          },
+          "osx": {
+            "MIMode": "lldb"
+          },
         }
     ]
 }
