@@ -13,6 +13,7 @@
 #include <string>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xarray.hpp>
+#include "vega.hpp"
 
 namespace cphot {
 
@@ -332,7 +333,7 @@ QSpectralFluxDensity Filter::get_ST_zero_Jy(){
  * @return Vega magnitude zero point
  */
 double Filter::get_Vega_zero_mag(){
-    return 0.;    // definition
+    return -2.5 * std::log10(this->get_Vega_zero_flux().to(flam));
 }
 
 /**
@@ -341,7 +342,12 @@ double Filter::get_Vega_zero_mag(){
  * @return flux of Vega in flam (erg/s/cm^2/Angstrom)
  */
 QSpectralFluxDensity Filter::get_Vega_zero_flux(){
-    return std::pow(10, -0.4 * this->get_Vega_zero_mag()) * flam;
+    Vega v = Vega();
+    double flux_flam = this->get_flux(
+        v.get_wavelength(nm),
+        v.get_flux(flam),
+        nm, flam).to(flam);
+    return flux_flam * flam;
 }
 
 
