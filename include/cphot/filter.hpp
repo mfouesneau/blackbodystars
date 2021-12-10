@@ -101,6 +101,16 @@ class Filter {
         double get_Vega_zero_mag();
         QSpectralFluxDensity get_Vega_zero_flux();
         QSpectralFluxDensity get_Vega_zero_Jy();
+
+        DMatrix get_wavelength() {return this->wavelength_nm;};
+        DMatrix get_wavelength(const QLength& in) {return this->wavelength_nm * nm.to(in);};
+        DMatrix get_transmission() {return this->transmission;};
+
+        bool is_photon_type() {return (this->dtype.compare("photon") == 0);}
+        QSpectralFluxDensity get_flux(const DMatrix& wavelength,
+                                      const DMatrix& flux,
+                                      const QLength& wavelength_unit,
+                                      const QSpectralFluxDensity& flux_unit);
 };
 
 /**
@@ -348,6 +358,65 @@ QSpectralFluxDensity Filter::get_Vega_zero_Jy(){
         double c = 1e-8 * speed_of_light.to(meter / second);
         double f = 1e5 / c * std::pow(this->get_lpivot().to(angstrom), 2) * this->get_Vega_zero_flux().to(flam);
         return f * Jy;
+}
+
+/**
+ * @brief Integrate the flux within the filter and return the integrated energy/flux
+ *
+ * The filter is first interpolated on the spectrum wavelength definition.
+ * The flux is then calculated as the integral of the flux within the filter depending on the detector type as:
+ *
+ * - for photon detectors:
+ * \f[
+ * f_\lambda = \frac{int \lambda T(\lambda) f_\lambda d\lambda}{int \lambda T(\lambda) d\lambda}
+ * \f]
+ *
+ * - for energy detectors:
+ * \f[
+ * f_\lambda = \frac{int T(\lambda) f_\lambda d\lambda}{int T(\lambda) d\lambda}
+ * \f]
+ *
+ * @param filt              passband object
+ * @param wavelength        wavelength array
+ * @param flux              flux array
+ * @param wavelength_unit   wavelength unit
+ * @param flux_unit         flux unit
+ * @return integrated flux through the filter
+ *
+ */
+QSpectralFluxDensity Filter::get_flux(
+    const DMatrix& wavelength,
+    const DMatrix& flux,
+    const QLength& wavelength_unit,
+    const QSpectralFluxDensity& flux_unit) {
+
+    //filter on wavelength units
+    const DMatrix& filt_wave = this->get_wavelength(wavelength_unit);
+    const DMatrix& filt_trans = this->get_transmission();
+
+    // Check overlaps
+    if ((xt::amin(filt_wave)[0] > xt::amax(wavelength)[0])
+        || (xt::amax(filt_wave)[0] < xt::amin(wavelength)[0])) {
+        return 0. * flux_unit;
+    }
+
+    // reinterpolate the transmission to the spectrum wavelength
+    auto new_trans = xt::interp(wavelength, filt_wave, filt_trans, 0., 0.);
+
+    // check transmission is not null everywhere
+    if (! xt::any(new_trans > 0)){
+        return 0. * flux_unit;
+    }
+    // Calculate the flux depending on detector type
+    if (this->is_photon_type()){
+        double a = xt::trapz(wavelength * new_trans * flux, wavelength)[0];
+        double b = xt::trapz(wavelength * new_trans, wavelength)[0];
+        return a / b * flux_unit;
+    } else {
+        double a = xt::trapz(new_trans * flux, wavelength)[0];
+        double b = xt::trapz(new_trans, wavelength)[0];
+        return a / b * flux_unit;
+    }
 }
 
 /**
