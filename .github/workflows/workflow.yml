@@ -54,15 +54,15 @@ jobs:
     - name: Setup Conan
       run: pip install conan && conan install .
 
-    - name: Configure CMake
+    - name: Configure CMake & build
       run: |
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-        make doc_doxygen
+        cmake --build ${{github.workspace}}/build --config Release
       
     # Publish built docs to gh-pages branch.
     # ===============================
-    #- name: Setup tmate session   # Debugging
-    #  uses: mxschmitt/action-tmate@v3
+    - name: Setup tmate session   # Debugging
+      uses: mxschmitt/action-tmate@v3
     - name: Commit documentation changes
       run: |
         git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
