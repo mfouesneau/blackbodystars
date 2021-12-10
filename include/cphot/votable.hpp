@@ -23,6 +23,8 @@
  *
  * version: 0.1a
  */
+/*! \defgroup VOTABLE VOTable Reader
+ */
 #pragma once
 #include "helpers.hpp"
 #include "prettyprint.hpp"
@@ -32,11 +34,14 @@
 #include <string>
 
 
+/** \ingroup VOTABLE
+ */
 namespace votable {
 
     /**
     * @brief Store Table Parameter Attributes
     *
+    * \ingroup VOTABLE
     */
     struct Param {
         std::string name;
@@ -51,6 +56,7 @@ namespace votable {
     /**
     * @brief Store Table Field and data
     *
+    * \ingroup VOTABLE
     */
     struct Field {
         std::string name;
@@ -65,6 +71,7 @@ namespace votable {
 
     /**
     * @brief Store parsed data from VOTable with a non-string format
+    * \ingroup VOTABLE
     *
     * Preserves the information from a field, but parses the data into T type
     * to be easily usable.
@@ -145,6 +152,8 @@ namespace votable {
 
     /**
      * @brief Class defining a very simple parser of XML VOTable
+     *
+     * \ingroup VOTABLE
      *
      * This class reads in the XML content assuming a single table was defined.
      * It stores the descriptions into fields and params (attributes of the

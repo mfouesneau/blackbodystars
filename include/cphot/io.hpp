@@ -1,8 +1,8 @@
 /**
- * @file io.hpp
  * @brief Tools to read and write filter libraries
  * @version 0.1
  *
+ *!\defgroup IO Input/Output
  */
 #pragma once
 #include "filter.hpp"

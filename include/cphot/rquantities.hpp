@@ -1,6 +1,7 @@
 /**
- * @file rquantities.hpp
  * @brief "RQuantity" class is the prototype template container class, that just holds a double value.
+ *
+ *! \defgroup RQUANTITY RQuantity
  */
 #pragma once
 #include <ratio>

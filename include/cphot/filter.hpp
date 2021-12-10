@@ -3,7 +3,13 @@
  * @brief A Filter class with unit awareness
  * @version 0.1
  */
- #pragma once
+/*! \defgroup FILTER Filter
+ * @brief Handle Filter definitions and manipulation
+ * Define a filter by its name, wavelength and transmission The type of
+ * detector (energy or photon counter) can be specified for adapting
+ * calculations. (default: photon)
+ */
+#pragma once
 #include "rquantities.hpp"
 #include <cmath>
 #include <exception>
@@ -15,6 +21,8 @@
 #include <xtensor/xarray.hpp>
 #include "vega.hpp"
 
+/** \ingroup FILTER
+ */
 namespace cphot {
 
 using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
@@ -32,6 +40,8 @@ using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
  * Define a filter by its name, wavelength and transmission The type of
  * detector (energy or photon counter) can be specified for adapting
  * calculations. (default: photon)
+ *
+ * \ingroup FILTER
  */
 class Filter {
 

@@ -3,6 +3,13 @@
  * @brief Handle vega spec/mags/fluxes manipulations
  *
  */
+/*! \defgroup VEGA Vega
+ * @brief Handle vega spec/mags/fluxes manipulations
+ *
+ * Class that handles vega spectrum and references.  This class know where to
+ * find the Vega synthetic spectrum (Bohlin 2007) in order to compute fluxes and
+ * magnitudes in given filters
+ */
 #pragma once
 #include "rquantities.hpp"
 #include "votable.hpp"
@@ -10,6 +17,8 @@
 #include <xtensor/xarray.hpp>
 #include <cphot/hardcoded_data/vega_data.hpp>
 
+/** \ingroup VEGA
+ */
 namespace cphot {
 
 using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
@@ -20,6 +29,8 @@ using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
  * Class that handles vega spectrum and references.  This class know where to
  * find the Vega synthetic spectrum (Bohlin 2007) in order to compute fluxes and
  * magnitudes in given filters
+ *
+ * \ingroup VEGA
  **/
 class Vega {
     public:
@@ -96,6 +107,8 @@ Vega::Vega(const std::vector<double>& wavelength,
  *
  * @param infile    votable containing the vega spectrum
  * @return Vega object
+ *
+ * \ingroup VEGA
  */
 Vega vega_from_votable(const std::string& infile){
 
