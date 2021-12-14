@@ -569,6 +569,8 @@ namespace units {
         {"micrometer", micrometre},
         {"micron", micrometre},
         {"um", micrometre},
+        {"pc", parsec},
+        {"parsec", parsec}
         };
 
     /**
