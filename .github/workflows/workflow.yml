@@ -27,7 +27,7 @@ jobs:
     - name: Setup Conan
       run: |
         pip install conan
-        conan profile update settings.compiler.libcxx=libstdc++11 default
+        # conan profile update settings.compiler.libcxx=libstdc++11 default
         conan install .
 
     - name: Configure CMake
@@ -67,7 +67,7 @@ jobs:
     - name: Setup Conan
       run: |
         pip install conan
-        conan profile update settings.compiler.libcxx=libstdc++11 default
+        # conan profile update settings.compiler.libcxx=libstdc++11 default
         conan install .
 
     - name: Configure CMake & build
