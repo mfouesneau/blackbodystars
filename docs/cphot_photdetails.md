@@ -4,13 +4,15 @@ It is sometimes not evident that there are essential differences between photome
 
 This section reviews the essential details for computing the luminosity and magnitude of a star through a photometric passband filter. We do not discuss calibration, which instrument documentations cover, in principle.
 
+\tableofcontents
+
 Let's consider a filter throughput (a.k.a, transmission curve, or response function) defined in wavelength by the dimensionless function \f$T(\lambda)\f$. This function tells you what fraction of the arriving photons at wavelength \f$\lambda\f$ get through the instrument.  Therefore, the total number of photons, per unit time per unit area, received in this filter is
 
 $$N_{tot} = \frac{1}{hc} \int_\lambda f_\lambda\,\lambda\,T(\lambda)\,d\lambda,$$
 
 where \f$f_\lambda\f$ is the wavelength-dependent flux density of an object given in energy per unit time per unit area per unit wavelength.
 
-Consequently, interpreting $\lambda T(\lambda)$ as a distribution leads to the statistical mean of the flux density, \f$\overline{f_\lambda}\f$:
+Consequently, interpreting \f$\lambda T(\lambda)\f$ as a distribution leads to the statistical mean of the flux density, \f$\overline{f_\lambda}\f$:
 
 $$\overline{f_\lambda}(T) = \frac{\int_\lambda \lambda f_\lambda T(\lambda) d\lambda}{\int_\lambda \lambda T(\lambda) d\lambda}.$$
 
@@ -77,7 +79,7 @@ cphot::download_svo_filter("Generic/Johnson.U").get_leff();
 
 then the difference between the Johnson and Vega systems within the same filter is given by
 
-$$\widetilde{mag}_\lambda - \overline{mag}_\lambda = 0.03 - 2.5 \log_{10} \frac{\lambda_{\rm eff}(Vega)}{\lambda_{\rm eff}(star)}, $$
+$$\widetilde{mag}_\lambda - \overline{mag}_\lambda = 0.03 - 2.5 \log_{10} \frac{\lambda_{\rm eff}(Vega)}{\lambda_{\rm eff}(star)},$$
 where we explicit which equation was used to compute magnitudes.
 
 ## AB magnitude system
@@ -85,10 +87,10 @@ where we explicit which equation was used to compute magnitudes.
 This system is defined such that, when monochromatic flux \f$f_\nu\f$ is measured in \f$erg\,s^{-1}\,cm^{-2} Hz^{-1}\f$,
 
 $$mag_{AB}(T) = -2.5\, \log_{10}(\overline{f_\nu}) - 48.60,$$
-where the value of the constant is selected to define $m_{AB}=V$ for a
+where the value of the constant is selected to define \f$m_{AB}=0\f$ for a
 flat-spectrum source. In this system, an object with constant flux per unit frequency interval has zero color.
 
-Koornneef et al. gives the respective definition of $\overline{f_\nu}(T)$:
+Koornneef et al. gives the respective definition of \f$\overline{f_\nu}(T)\f$:
 
 $$\overline{f_\nu}(T) = \frac{\int_\nu f_\nu T(\nu) d\nu / \nu}{\int_\nu T(\nu) d\nu / \nu}
 = \frac{\int_\lambda f_\nu T(\lambda) d\lambda / \lambda}{\int_\lambda T(\lambda) d\lambda / \lambda}$$
