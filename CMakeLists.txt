@@ -36,6 +36,13 @@ include_directories(
         # "${PROJECT_SOURCE_DIR}/tests"
         )
 
+# HDF5 libraries
+find_package(HDF5 COMPONENTS CXX)
+if(HDF5_FOUND)
+    include_directories(${HDF5_INCLUDE_DIRS})
+endif()
+
+
 # Define executables
 # ------------------
 add_executable(blackbodystars
@@ -43,6 +50,9 @@ add_executable(blackbodystars
 
 add_executable(cphot_dev
         ${PROJECT_SOURCE_DIR}/src/cphot_dev.cpp)
+
+add_executable(hdf5_test
+        ${PROJECT_SOURCE_DIR}/src/hdf5test.cpp)
 
 # Link the executables to external libraries
 # -------------------------------------------
@@ -54,8 +64,12 @@ target_link_libraries(cphot_dev
         ${blas_libraries} ${lapack_libraries}
         ${CONAN_LIBS})
 
+target_link_libraries(hdf5_test
+        ${blas_libraries} ${lapack_libraries}
+        ${CONAN_LIBS})
+
 # Where to install the targets --
-install(TARGETS blackbodystars cphot_dev
+install(TARGETS blackbodystars cphot_dev hdf5_test
         CONFIGURATIONS runtime
         RUNTIME DESTINATION bin
         )

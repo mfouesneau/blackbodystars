@@ -1,8 +1,10 @@
 [requires]
-# You may have multiple lines like the one below, if you have many dependencies.
-xtensor/0.21.5
+# xtensor
+xtensor/0.24.0
 # testing HTTP requests
 cpr/1.6.2
+# hdf5
+highfive/2.3.1
 
 [generators]
 cmake
