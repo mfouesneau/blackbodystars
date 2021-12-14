@@ -87,12 +87,13 @@ Sun::Sun(const QLength & distance,
         // read the theoretical spectrum
         this->wavelength_nm = xt::adapt(cphot_sun_theoretical::wavelength) * cphot_sun_theoretical::wavelength_unit.to(nm);
         this->flux_flam = xt::adapt(cphot_sun_theoretical::flux) * cphot_sun_theoretical::flux_unit.to(flam);
-        this->distance_conversion = std::pow((cphot_sun_theoretical::distance.to(distance) / distance).value, 2);
+        // distance_conversion = (default distance / distance) ** 2
+        this->distance_conversion = std::pow((cphot_sun_theoretical::distance/distance).value, 2);
     } else {
         // read the theoretical spectrum
         this->wavelength_nm = xt::adapt(cphot_sun_observed::wavelength) * cphot_sun_observed::wavelength_unit.to(nm);
         this->flux_flam = xt::adapt(cphot_sun_observed::flux) * cphot_sun_observed::flux_unit.to(flam);
-        this->distance_conversion = std::pow((cphot_sun_observed::distance.to(distance) / distance).value, 2);
+        this->distance_conversion = std::pow((cphot_sun_theoretical::distance/distance).value, 2);
     }
 }
 

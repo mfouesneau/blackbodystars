@@ -9,6 +9,7 @@
 #include <cphot/rquantities.hpp>
 #include <cphot/votable.hpp>
 #include <cphot/vega.hpp>
+#include <cphot/sun.hpp>
 
 
 
@@ -28,4 +29,12 @@ int main(){
               <<  flux_flam_v2 << " flam\n"
               << -2.5 * std::log10(flux_flam_v2) << " mag\n"
               << -2.5 * std::log10(flux_flam_v2) - filt.get_Vega_zero_mag() << " vega mag\n";
+
+    auto s = cphot::Sun();
+    std::cout << s.get_wavelength(angstrom) << " angstrom\n"
+              << s.get_flux() << " flam\n";
+
+    s = cphot::Sun(10 * parsec);
+    std::cout << s.get_wavelength(angstrom) << " angstrom\n"
+              << s.get_flux(flam) << " flam\n";
 }
