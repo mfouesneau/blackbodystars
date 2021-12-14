@@ -13,15 +13,20 @@ in the wavelength and flux definitions through a simplified code.
 
 Filters are represented individually by a `cphot::Filter` object.
 
-Collections of filters are handled with a `cphot::Library`. We provide an internal library that
-contains a significant amount of standard filters.
+One can use a collection of filters handled with a `cphot::HDF5Library`.
+For example, the internal library of [pyphot](http://mfouesneau.github.io/pyphot/) contains a significant amount of standard filters.
 We also provide a single function interface to the [SVO Filter Profile Service](http://svo2.cab.inta-csic.es/theory/fps/) `cphot::download_svo_filter`
 
-Each filter is minimally defined by a `wavelength` and `throughput`. Many properties such as central or pivot wavelength are computed internally. Zero points in multiple units are also accessible (AB, Vega magnitude, Jy, erg/s/cm2/AA). The default detector type is assumed to be photonic, but energetic detectors are also handled transparently for the computations.
+Each filter is minimally defined by a `wavelength` and `throughput`. Many
+properties such as central or pivot wavelength are computed internally. Zero
+points in multiple units are also accessible (AB, Vega magnitude, Jy,
+erg/s/cm2/AA). The default detector type is assumed to be photonic, but
+energetic detectors are also handled transparently for the computations.
 
 What's new?
 -----------
 
+* [Dec 14, 2021] Added `cphot::HDF5Library` interface and revised documentation.
 * [Dec 10, 2021] First portage of the pyphot library to C++. (no internal library)
 
 Contributors
