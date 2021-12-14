@@ -17,6 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: install packages
+      run: sudo apt install -y libgtk2.0
+      
     - name: Setup Conan
       run: pip install conan && conan install .
 
