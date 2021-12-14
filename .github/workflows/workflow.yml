@@ -25,8 +25,8 @@ jobs:
         libhdf5-103 libhdf5-cpp-103 \
         libvdpau-dev libva-dev
         
-    - name: Setup tmate session   # Debugging
-      uses: mxschmitt/action-tmate@v3
+    #- name: Setup tmate session   # Debugging
+    #  uses: mxschmitt/action-tmate@v3
       
     - name: Setup Conan
       run: |
