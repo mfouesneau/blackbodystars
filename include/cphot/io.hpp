@@ -1,8 +1,8 @@
 /**
+ * @defgroup IO Input/Output
  * @brief Tools to read and write filter libraries
  * @version 0.1
  *
- *!\defgroup IO Input/Output
  */
 #pragma once
 #include "filter.hpp"
@@ -14,7 +14,8 @@
 namespace cphot {
 
 /**
- * @brief Get the filter object
+ * @ingroup IO
+ * @brief Get the filter object from VOTable object
  *
  * @param vot  votable document
  * @return Filter object
@@ -52,6 +53,7 @@ Filter get_filter(votable::VOTable& vot){
 }
 
 /**
+ * @ingroup IO
  * @brief Get the filter object from a VOTable file
  *
  * @param vot_filename  path to the xml file
@@ -64,12 +66,17 @@ Filter get_filter(const std::string& vot_filename){
 }
 
 /**
+ * @ingroup IO
  * @brief main interface to SVO data requests
+ *
+ * Query the <a link=http://svo2.cab.inta-csic.es/theory/fps/>SVO filter profile
+ * service</a> and return the filter object
+ * (http://svo2.cab.inta-csic.es/theory/fps)
  *
  * @param id              passband id
  * @return std::string    data content
  */
-cphot::Filter download_svo_filter(const std::string & id){
+Filter download_svo_filter(const std::string & id){
     cpr::Response r = cpr::Get(cpr::Url{"http://svo2.cab.inta-csic.es/theory/fps/fps.php"},
                                cpr::Parameters{{"ID", id}});
     votable::VOTable vot;

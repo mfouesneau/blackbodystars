@@ -1,14 +1,13 @@
 /**
- * @file vega.hpp
+ * @defgroup VEGA Vega
  * @brief Handle vega spec/mags/fluxes manipulations
  *
- */
-/*! \defgroup VEGA Vega
- * @brief Handle vega spec/mags/fluxes manipulations
+ * Class that handles vega spectrum and references.  This class knows where to
+ * find the Vega synthetic spectrum taken from <a
+ * href="https://iopscience.iop.org/article/10.1086/420715"> Bohlin 2007 </a> in
+ * order to compute fluxes and magnitudes in given filters.
  *
- * Class that handles vega spectrum and references.  This class know where to
- * find the Vega synthetic spectrum (Bohlin 2007) in order to compute fluxes and
- * magnitudes in given filters
+ * \note the Vega zeropoints are defined by the magnitude of Vega being exactly zero in all filters.
  */
 #pragma once
 #include "rquantities.hpp"
@@ -17,8 +16,6 @@
 #include <xtensor/xarray.hpp>
 #include <cphot/hardcoded_data/vega_data.hpp>
 
-/** \ingroup VEGA
- */
 namespace cphot {
 
 using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
@@ -26,11 +23,11 @@ using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
 /**
  * @brief Interface to Vega reference data
  *
- * Class that handles vega spectrum and references.  This class know where to
+ * Class that handles vega spectrum and references.  This class knows where to
  * find the Vega synthetic spectrum (Bohlin 2007) in order to compute fluxes and
  * magnitudes in given filters
  *
- * \ingroup VEGA
+ * @ingroup VEGA
  **/
 class Vega {
     public:

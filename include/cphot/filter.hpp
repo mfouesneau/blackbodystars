@@ -1,13 +1,17 @@
 /**
- * @file filter.hpp
- * @brief A Filter class with unit awareness
- * @version 0.1
- */
-/*! \defgroup FILTER Filter
- * @brief Handle Filter definitions and manipulation
+ * @defgroup FILTER Filter
+ * @brief Handle Filter definitions and manipulation.
+ *
  * Define a filter by its name, wavelength and transmission The type of
  * detector (energy or photon counter) can be specified for adapting
  * calculations. (default: photon)
+ *
+ * Note the usual astronomical (non SI) units of flux definitions:
+ *
+ * * flam     = \f$erg/s/cm^2/AA\f$
+ * * fnu      = \f$erg/s/cm^2/Hz\f$
+ * * photflam = \f$photon/s/cm^2/AA\f$
+ * * photnu   = \f$photon/s/cm^2/Hz\f$
  */
 #pragma once
 #include "rquantities.hpp"
@@ -28,20 +32,13 @@ namespace cphot {
 using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
 
 /**
+ * @ingroup FILTER
  * @brief Unit Aware Filter.
  * input spectra and output values have units to avoid mis-interpretation.
- *
- * Note the usual (non SI) units of flux definitions:
- *       flam     = erg/s/cm**2/AA
- *       fnu      = erg/s/cm**2/Hz
- *       photflam = photon/s/cm**2/AA
- *       photnu   = photon/s/cm**2/Hz
  *
  * Define a filter by its name, wavelength and transmission The type of
  * detector (energy or photon counter) can be specified for adapting
  * calculations. (default: photon)
- *
- * \ingroup FILTER
  */
 class Filter {
 
@@ -403,7 +400,6 @@ QSpectralFluxDensity Filter::get_Vega_zero_Jy(){
  * f_\lambda = \frac{\int T(\lambda) f_\lambda d\lambda}{\int T(\lambda) d\lambda}
  * \f]
  *
- * @param filt              passband object
  * @param wavelength        wavelength array
  * @param flux              flux array
  * @param wavelength_unit   wavelength unit

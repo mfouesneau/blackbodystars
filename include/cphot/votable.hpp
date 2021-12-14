@@ -1,4 +1,5 @@
 /**
+ * @defgroup VOTABLE VOTable reader
  * @brief Reading VOTABLEs
  *
  * This package is a very first draft of a VOTABLE reader. It was intended to
@@ -6,24 +7,22 @@
  *
  * VOTable supports a number of different serialization formats.
  *
- * TABLEDATA stores the data in pure XML, where the numerical values are written
+ * * TABLEDATA stores the data in pure XML, where the numerical values are written
  * as human-readable strings.
  *
- * BINARY is a binary representation of the data, stored in the XML as an opaque
+ * * BINARY is a binary representation of the data, stored in the XML as an opaque
  * base64-encoded blob.
  *
- * BINARY2 was added in VOTable 1.3, and is identical to “BINARY”, except that
+ * * BINARY2 was added in VOTable 1.3, and is identical to “BINARY”, except that
  * it explicitly records the position of missing values rather than identifying
  * them by a special value.
  *
- * FITS stores the data in an external FITS file. This serialization is not
+ * * FITS stores the data in an external FITS file. This serialization is not
  * supported
  *
- * Currently only the TABLEDATA is supported by this package
+ * \warning Currently only the TABLEDATA is supported by this package
  *
  * version: 0.1a
- */
-/*! \defgroup VOTABLE VOTable Reader
  */
 #pragma once
 #include "helpers.hpp"
@@ -41,7 +40,7 @@ namespace votable {
     /**
     * @brief Store Table Parameter Attributes
     *
-    * \ingroup VOTABLE
+    * @ingroup VOTABLE
     */
     struct Param {
         std::string name;
@@ -56,7 +55,7 @@ namespace votable {
     /**
     * @brief Store Table Field and data
     *
-    * \ingroup VOTABLE
+    * @ingroup VOTABLE
     */
     struct Field {
         std::string name;
@@ -71,7 +70,7 @@ namespace votable {
 
     /**
     * @brief Store parsed data from VOTable with a non-string format
-    * \ingroup VOTABLE
+    * @ingroup VOTABLE
     *
     * Preserves the information from a field, but parses the data into T type
     * to be easily usable.
@@ -153,7 +152,7 @@ namespace votable {
     /**
      * @brief Class defining a very simple parser of XML VOTable
      *
-     * \ingroup VOTABLE
+     * @ingroup VOTABLE
      *
      * This class reads in the XML content assuming a single table was defined.
      * It stores the descriptions into fields and params (attributes of the
@@ -204,7 +203,7 @@ VOTable::VOTable(const std::string & input_filename){
 /**
  * @brief Constructor
  *
- * @param c_str: XML file content to parse
+ * @param content: XML file content to parse
  */
 void VOTable::from_content(const std::string & content){
     std::string json_str = xml2json(content.c_str());
@@ -329,7 +328,6 @@ size_t VOTable::n_columns(){
  */
 template <typename T>
 VOField<T> VOTable::get(std::string field_name){
-    //TODO: replace by correct index
     size_t match = -1;
     for (size_t idx=0; idx < this->fields.size(); ++idx){
         if (field_name.compare(this->fields[idx].name) == 0){

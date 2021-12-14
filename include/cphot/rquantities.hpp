@@ -1,7 +1,49 @@
 /**
- * @brief "RQuantity" class is the prototype template container class, that just holds a double value.
+ * @defgroup RQUANTITY unit module
+ * @brief This module defines usual units and convenient ways to convert between them.
  *
- *! \defgroup RQUANTITY RQuantity
+ * a `Quantity` is defined as a `double` with a `Unit` attached.
+ * A unit combines the following 8 dimensions to some powers:
+ * -# MassDim      mass
+ * -# LengthDim    length
+ * -# TimeDim      time
+ * -# AngleDim     angular
+ * -# CurrentDim   current (electric)
+ * -# LumDim       luninosity
+ * -# SubDim       Substance (chemical)
+ * -# TempDim      temperature
+ *
+ * for example,
+ * * a frequency is defined as `QUANTITY_TYPE(0, 0, -1, 0, 0, 0, 0, 0, QFrequency)`
+ * * an energy as `QUANTITY_TYPE(1, 2, -2, 0, 0, 0, 0, 0, QEnergy)`
+ *
+ * Below are listed the base definitions:
+ *
+ * * `QUANTITY_TYPE(0, 0, 0, 0, 0, 0, 0, 0, Number)`
+ * * `QUANTITY_TYPE(1, 0, 0, 0, 0, 0, 0, 0, QMass)`
+ * * `QUANTITY_TYPE(0, 1, 0, 0, 0, 0, 0, 0, QLength)`
+ * * `QUANTITY_TYPE(0, 2, 0, 0, 0, 0, 0, 0, QArea)`
+ * * `QUANTITY_TYPE(0, 3, 0, 0, 0, 0, 0, 0, QVolume)`
+ * * `QUANTITY_TYPE(0, 0, 1, 0, 0, 0, 0, 0, QTime)`
+ * * `QUANTITY_TYPE(0, 1, -1, 0, 0, 0, 0, 0, QSpeed)`
+ * * `QUANTITY_TYPE(0, 1, -2, 0, 0, 0, 0, 0, QAcceleration)`
+ * * `QUANTITY_TYPE(0, 1, -3, 0, 0, 0, 0, 0, QJerk)`
+ * * `QUANTITY_TYPE(0, 0, -1, 0, 0, 0, 0, 0, QFrequency)`
+ * * `QUANTITY_TYPE(1, 1, -2, 0, 0, 0, 0, 0, QForce)`
+ * * `QUANTITY_TYPE(1, -1, -2, 0, 0, 0, 0, 0, QPressure)`
+ * * `QUANTITY_TYPE(0, 0, 0, 0, 1, 0, 0, 0, QCurrent)`
+ * * `QUANTITY_TYPE(0, 0, 0, 0, 0, 1, 0, 0, QLuminosity)`
+ * * `QUANTITY_TYPE(0, 0, 0, 0, 0, 0, 1, 0, QSubstance)`
+ * * `QUANTITY_TYPE(0, 0, 0, 0, 0, 0, 0, 1, QTemperature)`
+ * * `QUANTITY_TYPE(1, 2, -2, 0, 0, 0, 0, 0, QEnergy)`
+ * * `QUANTITY_TYPE(1, 2, -3, 0, 0, 0, 0, 0, QFlux)`
+ * * `QUANTITY_TYPE(1, -1, -3, 0, 0, 0, 0, 0, QSpectralFluxDensity)`
+ * * `QUANTITY_TYPE(0, 0, 0, 1, 0, 0, 0, 0, Angle)`
+ * * `QUANTITY_TYPE(0, 0, 0, 2, 0, 0, 0, 0, AngleArea)`
+ *
+ * We predefined units as `constexpr` which are optimized at compilation time.
+ *
+ * \note All units only apply to double values. (eventually will extend to vectors etc)
  */
 #pragma once
 #include <ratio>
@@ -10,22 +52,13 @@
 #include <string_view>
 #include <map>
 
-/*
- references in SI units
-meter = [length] = m = metre
-second = [time] = s = sec
-ampere = [current] = A = amp
-candela = [luminosity] = cd = candle
-gram = [mass] = g
-mole = [substance] = mol
-degK = [temperature] = K = kelvin
-radian = [] = rad
-bit = []
-count = []
-*/
-
-
 // The class SHOULD NOT BE INSTANTIATED directly by itself, rather use the quantity types defined below.
+/**
+ * @ingroup RQUANTITY
+ * @brief prototype template container class, that just holds a double value.
+ *
+ * \warning This class is not intended to be used directly, but rather as a base class for the quantity types.
+ */
 template<typename MassDim, typename LengthDim, typename TimeDim, typename AngleDim, typename CurrentDim, typename LumDim, typename SubDim, typename TempDim>
 class RQuantity
 {
@@ -542,12 +575,14 @@ std::ostream &operator<<(std::ostream &os, QFlux rhs){
 }
 
 
+/**
+ * @ingroup RQuantity
+ * @brief Convenient shortcuts
+ *
+ */
 namespace units {
     /**
-     * convenient mappers
-     */
-
-    /**
+     * @ingroup RQuantity
      * @brief str aliases to length units
      */
     const std::map<std::string, QLength> length_mapper {
@@ -574,6 +609,7 @@ namespace units {
         };
 
     /**
+     * @ingroup RQuantity
      * @brief str aliases to spectral flux density units
      */
     const std::map<std::string, QSpectralFluxDensity> spectralflux_mapper {
@@ -586,6 +622,7 @@ namespace units {
     };
 
     /**
+     * @ingroup RQuantity
      * @brief find length units from a string
      * @return QLength unit
      */
@@ -594,6 +631,7 @@ namespace units {
     }
 
     /**
+     * @ingroup RQuantity
      * @brief find length units from a string
      * @return QLength unit
      */
