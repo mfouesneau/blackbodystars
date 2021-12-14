@@ -22,7 +22,8 @@ jobs:
         sudo apt update 
         sudo apt install -y libgtk2.0-dev libblas-dev \
         liblapack-dev libhdf5-dev libhdf5-serial-dev \
-        libhdf5-103 libhdf5-cpp-103 
+        libhdf5-103 libhdf5-cpp-103 \
+        libvdpau-dev libva-dev
         
     - name: Setup tmate session   # Debugging
       uses: mxschmitt/action-tmate@v3
@@ -64,8 +65,8 @@ jobs:
     - name: install packages
       run: |
         sudo apt update
-        sudo apt install -y libgtk2.0-dev
-        sudo apt install doxygen
+        sudo apt install -y libgtk2.0-dev \
+        libvdpau-dev libva-dev doxygen
       
     - name: Setup Conan
       run: |
