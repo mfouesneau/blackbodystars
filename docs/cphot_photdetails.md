@@ -16,14 +16,15 @@ $$\overline{f_\lambda}(T) = \frac{\int_\lambda \lambda f_\lambda T(\lambda) d\la
 
 Note that this is not the mean flux density because of the \f$\lambda\f$ factor in the integrals. It is the mean photon rate density in this filter commonly expressed in stellar physics literature as \f$erg.s^{-1}.cm^{-2}.Å^{-1}\f$ or \f$W.m^{-2}.nm^{-1}\f$.
 
-⚠️ from pyphot example:
-```python
-# computing the flux of a spectrum
-flux = lib['hst_wfc3_f110w'].get_flux(lamb, spec)
-# lamb may have units, otherwise assuming consistent definitions.
-
-# computing the flux of many spectra
-fluxes = lib['hst_wfc3_f110w'].get_flux(lamb, spectra, axis=1)
+Example: (the code links to the API documentation)
+```cpp
+#include <cphot/filter.hpp>
+#include <cphot/io.hpp>           // svo webservice
+#include <cphot/rquantities.hpp>  // units
+cphot::Filter filt = cphot::download_svo_filter("Gaia/Gaia3.G");
+// compute the mean flux density in this filter
+// note the units as arguments
+auto flux = filt.get_flux(lamb, spec, nm, flam);
 ```
 
 Finally, at least for instruments using CCD or CCD-like cameras, i.e., counting photons, we obtain the usual definition of a magnitude
@@ -41,15 +42,17 @@ This system is defined such that the star Alpha Lyr (Vega) has magnitude 0 in an
 
 $$mag_{Vega}(T) = -2.5\,\log_{10}\left(\overline{f_\lambda} / \overline{f_\lambda}(Vega)\right).$$
 
-⚠️ from pyphot example:
-```python
-# convert to magnitudes
-import numpy as np
-f = lib['hst_wfc3_f110w']
-fluxes = f.get_flux(lamb, spectra, axis=1)
-mags = -2.5 * np.log10(fluxes) - f.Vega_zero_mag
-# or similarly
-mags = -2.5 * np.log10(fluxes / f.Vega_zero_flux)
+Example:
+```cpp
+#include <cphot/filter.hpp>
+#include <cphot/io.hpp>           // svo webservice
+#include <cphot/rquantities.hpp>  // units
+#include <cmath>
+cphot::Filter filt = cphot::download_svo_filter("HST/WFC3_IR.F110W");
+double flux = filt.get_flux(lamb, spec, nm, flam).to(flam);
+double mags_a = -2.5 * std::log10(flux) - filt.get_Vega_zero_mag();
+// or similarly (note the use of the units)
+double mags_b = -2.5 * std::log10(flux / filt.get_Vega_zero_flux().to(flam));
 ```
 
 ## Johnson system
@@ -67,31 +70,15 @@ If one defines the **effective wavelength** \f$\lambda_{\rm eff}\f$ as the photo
 
 $$\lambda_{\rm eff} = \frac{\int \lambda f_\lambda T(\lambda) d\lambda}{\int f_\lambda T(\lambda) d\lambda},$$
 
-```python
-# the effective wavelength for vega is given by
-lib['ground_johnson_u'].leff
+```cpp
+//the effective wavelength for vega is given by
+cphot::download_svo_filter("Generic/Johnson.U").get_leff();
 ```
 
 then the difference between the Johnson and Vega systems within the same filter is given by
 
 $$\widetilde{mag}_\lambda - \overline{mag}_\lambda = 0.03 - 2.5 \log_{10} \frac{\lambda_{\rm eff}(Vega)}{\lambda_{\rm eff}(star)}, $$
 where we explicit which equation was used to compute magnitudes.
-
-
-```python
-# The switch between the energy and the photon count equation is done
-# through the `Filter.set_dtype` method, and becomes transparent for any
-# use. So if you define you own filter either use the constructor or the
-# method
-
-# define a constant filter in energy count from 100 to 110 AA
-f = Filter(np.arange(100, 110), np.ones(10), \
-           dtype='energy', unit='AA')
-# manually set the detector type
-f.set_dtype('photon')
-```
-
-
 
 ## AB magnitude system
 
@@ -116,19 +103,27 @@ one can easily show that
 
 $$\lambda_p^2 = \frac{\int_\lambda T(\lambda)\,\lambda\,d\lambda}{\int_\lambda T(\lambda)\,d\lambda /\lambda}.$$
 
+```cpp
+//the pivot wavelength for a filter is given by
+cphot::download_svo_filter("Generic/Johnson.U").get_lpivot();
+```
+
 Therefore for filters with AB magnitudes, one can compute
 
 $$mag_{AB}(T) = -2.5\, \log_{10}(\overline{f_\lambda}) - 2.5\log_{10}\left(\lambda_p^2/c\right) - 48.6,$$
 where one must care to use the speed of light \f$c\f$ and \f$\lambda_p\f$ in matching units.
 
-```python
-# convert to magnitudes
-import numpy as np
-f = lib['hst_wfc3_f110w']
-fluxes = f.get_flux(lamb, spectra, axis=1)
-mags = -2.5 * np.log10(fluxes) - f.AB_zero_mag
-# or similarly
-mags = -2.5 * np.log10(fluxes / f.AB_zero_flux)
+```cpp
+#include <cphot/filter.hpp>
+#include <cphot/io.hpp>
+#include <cphot/rquantities.hpp>
+#include <cmath>
+cphot::Filter filt = cphot::download_svo_filter("HST/WFC3_IR.F110W");
+double flux = filt.get_flux(lamb, spec, nm, flam).to(flam);
+// Simlarly to before ("Vega" -> "AB")
+double mags_a = -2.5 * std::log10(flux) - filt.get_AB_zero_mag();
+// or similarly (note the use of the units)
+double mags_b = -2.5 * std::log10(flux / filt.get_AB_zero_flux().to(flam));
 ```
 
 
@@ -140,14 +135,17 @@ This system is defined such as a source with flat \f$f_\lambda\f$ will have the 
 Koornneef et al. (1986; same as above) defines
 $$mag_{ST}(T) = -2.5\, \log_{10}(\overline{f_\lambda}) - 21.1,$$
 
-```python
-# convert to magnitudes
-import numpy as np
-f = lib['hst_wfc3_f110w']
-fluxes = f.get_flux(lamb, spectra, axis=1)
-mags = -2.5 * np.log10(fluxes) - f.ST_zero_mag
-# or similarly
-mags = -2.5 * np.log10(fluxes / f.ST_zero_flux)
+```cpp
+#include <cphot/filter.hpp>
+#include <cphot/io.hpp>
+#include <cphot/rquantities.hpp>
+#include <cmath>
+cphot::Filter filt = cphot::download_svo_filter("HST/WFC3_IR.F110W");
+double flux = filt.get_flux(lamb, spec, nm, flam).to(flam);
+// Simlarly to before ("Vega" -> "ST")
+double mags_a = -2.5 * std::log10(flux) - filt.get_ST_zero_mag();
+// or similarly (note the use of the units)
+double mags_b = -2.5 * std::log10(flux / filt.get_ST_zero_flux().to(flam));
 ```
 
 
@@ -160,10 +158,14 @@ The jansky (symbol Jy) is a non-SI unit of spectral flux density, it is equivale
 $${f_{Jy}} = \frac{10^5}{10^{-8}c} {\lambda_p^2} {f_\lambda},$$
 where \f$c\f$ is the speed of light in \f$m/s\f$,  \f$\lambda_p\f$ is the pivot wavelength in \f$Å\f$, and \f${f_\lambda}\f$ the flux (Vega, AB, or ST) in flam (\f$erg.s^{-1}.cm^{-2}.Å^{-1}\f$).
 
-```python
-import numpy as np
-f = lib['hst_wfc3_f110w']
-print(f.AB_zero_Jy, f.Vega_zero_Jy, f.ST_zero_Jy)
+```cpp
+#include <iostream>
+#include <cphot/filter.hpp>
+#include <cphot/io.hpp>
+cphot::Filter filt = cphot::download_svo_filter("HST/WFC3_IR.F110W");
+std::cout << filt.get_AB_zero_Jy() << " "
+          << filt.get_Vega_zero_Jy() << " "
+          << filt.get_ST_zero_Jy() << std::endl;
 ```
 
 ---
