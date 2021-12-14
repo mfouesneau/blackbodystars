@@ -59,14 +59,17 @@ double mags_b = -2.5 * std::log10(flux / filt.get_Vega_zero_flux().to(flam));
 
 ## Johnson system
 
-The Johson system is defined such that the star Alpha Lyr (Vega) has \f$V=0.03\f$ and all colors equal to zero. It is very similar to the Vega magnitude system, but **using mean flux definition** (instead of photon counts), i.e., **energy
-counter** detectors
+The Johson system is defined such that the star Alpha Lyr (Vega) has
+\f$V=0.03\f$ and all colors equal to zero. It is very similar to the Vega
+magnitude system, but **using mean flux definition** (instead of photon counts),
+i.e., **energy counter** detectors
 
 $$\widetilde{f_\lambda}(T) = \frac{\int_\lambda f_\lambda T(\lambda) d\lambda}{\int_\lambda T(\lambda) d\lambda},$$
 
 (the true definition of mean flux throughout a given transmission filter.)
 
-> **Note**: Table A2 of Bessell et al. 1998 gives zero points for the UBVRIJHKL(+Kp and L’) filters in the Cousins-Glass-Johnson system.
+> **Note**: Table A2 of [Bessell et al. (1998)](https://ui.adsabs.harvard.edu/abs/1998A%26A...333..231B) gives zero points for the UBVRIJHKL(+Kp and L’) filters in the
+Cousins-Glass-Johnson system.
 
 If one defines the **effective wavelength** \f$\lambda_{\rm eff}\f$ as the photon weighted mean wavelength:
 
@@ -173,7 +176,13 @@ std::cout << filt.get_AB_zero_Jy() << " "
 ---
 ## References
 
-* Bessel, M. S. 1990, PASP, 91, 589;
+* Bessel, M. S. 1990, PASP, 91, 589 - _"UBVRI passbands."_
+  [[1990PASP..102.1181B](https://ui.adsabs.harvard.edu/abs/1990PASP..102.1181B)];
+* Bessel, M. S. 1998, A&A, 333, 231 - _"Model atmospheres broad-band colors, bolometric corrections and temperature calibrations for O - M stars."_
+[[1998A%26A...333..231B](https://ui.adsabs.harvard.edu/abs/1998A%26A...333..231B)]
+
+* Koornneef, Bohlin, Buser, Horne, Turnshek, 1986, Highlights of astronomy 7 - _"Synthetic photometry and the calibration of HST"._ [[1986HiA.....7..833K](https://ui.adsabs.harvard.edu/abs/1986HiA.....7..833K)]
+
 
 * Bessel, M. S. 1983, PASP, 95, 480;
 
@@ -184,5 +193,3 @@ std::cout << filt.get_AB_zero_Jy() << " "
 * Johnson, H. L. \& Morgan, W. W. 1953, ApJ, 117, 313
 
 * Oke, J.B. 1974, ApJS, 27, 21;
-
-* Koornneef, Bohlin, Buser, Horne, Turnshek: Synthetic photometry and the calibration of HST.
