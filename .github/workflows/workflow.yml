@@ -18,7 +18,11 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: install packages
-      run: sudo apt update && sudo apt install -y libgtk2.0-dev
+      run: |
+        sudo apt update 
+        sudo apt install -y libgtk2.0-dev libblas-dev \
+        liblapack-dev libhdf5-dev libhdf5-serial-dev \
+        libhdf5-103 libhdf5-cpp-103 
       
     - name: Setup Conan
       run: |
