@@ -35,4 +35,4 @@ Contributors
 
 Author:
 
-Morgan Fouesneau
+- Morgan Fouesneau

@@ -85,6 +85,7 @@ Filter download_svo_filter(const std::string & id){
 }
 
 /**
+ * @ingroup IO
  * @brief Download the filter library from pyphot repository
  *
  * The url to pyphot's file is hard-coded in the function for:
