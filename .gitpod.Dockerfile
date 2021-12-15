@@ -12,7 +12,7 @@ USER root
 
 # HDF5 libraries and links
 RUN apt-get update \
-    && apt-get -y install libvdpau-dev libva-dev \
+    && apt-get -y install libgtk2.0-dev libvdpau-dev libva-dev \
     && apt-get -y install \
         libblas-dev \
         liblapack-dev \
