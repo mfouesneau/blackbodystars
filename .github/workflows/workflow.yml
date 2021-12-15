@@ -16,18 +16,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: install packages
       run: |
-        sudo apt update 
+        sudo apt update
         sudo apt install -y libgtk2.0-dev libblas-dev \
         liblapack-dev libhdf5-dev libhdf5-serial-dev \
         libhdf5-103 libhdf5-cpp-103 \
         libvdpau-dev libva-dev
-        
+
     #- name: Setup tmate session   # Debugging
     #  uses: mxschmitt/action-tmate@v3
-      
+
     - name: Setup Conan
       run: |
         pip install conan
@@ -38,21 +38,21 @@ jobs:
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-  
+
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-      
+
     - name: Upload build files
-      uses: actions/upload-artifact@v2 
+      uses: actions/upload-artifact@v2
       # uploads build files to be accessible across jobs
       with:
         name: dist
         path: ${{github.workspace}}/build
-        
+
     - name: Test
       working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.  
+      # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
 
@@ -61,13 +61,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: install packages
       run: |
         sudo apt update
         sudo apt install -y libgtk2.0-dev \
         libvdpau-dev libva-dev doxygen
-      
+
     - name: Setup Conan
       run: |
         pip install conan
@@ -77,8 +77,8 @@ jobs:
     - name: Configure CMake & build
       run: |
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-        make doc_doxygen
-      
+        cmake --build ${{github.workspace}}/build --config Release
+
     # Publish built docs to gh-pages branch.
     # ===============================
     # - name: Setup tmate session   # Debugging
