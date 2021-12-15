@@ -15,17 +15,14 @@ provided in `hdf5test.cpp`.
 * `<X> Jy`: flux in :math:`Jy` (Jansky) in the `X` system
 
 
-filters_properties.csv
-
-
 @htmlonly
-<div id="filterTable"></div>
+<div id="filterTable">Pyphot Filter Library</div>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript"charset="utf-8">
     d3.text("filters_properties.csv", function(data) {
         var parsedCSV = d3.csv.parseRows(data);
 
-        var container = d3.select("contents")
+        var container = d3.select("#filterTable")
             .append("table")
 
             .selectAll("tr")
