@@ -41,7 +41,6 @@ using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
  * calculations. (default: photon)
  */
 class Filter {
-
     private:
         static constexpr double c = speed_of_light.to(angstrom / second);
         static constexpr double h = 6.62607015e-27;  // erg/s
@@ -141,7 +140,6 @@ Filter::Filter(const DMatrix& wavelength,
                const QLength& wavelength_unit,
                const std::string dtype,
                const std::string name){
-
     double convfac = wavelength_unit.to(nanometre);
     this->wavelength_nm = convfac * wavelength;
     this->wavelength_unit = nm;
@@ -166,12 +164,10 @@ Filter::Filter(const DMatrix& wavelength,
  */
 std::ostream & operator<<(std::ostream &os,
                           Filter &F){
-
     os << "Filter: " << F.get_name()
        << "\n";
     return os;
 }
-
 
 /**
  * @brief Calculate the various standard properties of a given filter.
@@ -180,7 +176,6 @@ std::ostream & operator<<(std::ostream &os,
  * Those that do not require to consider an SED such as Vega.
  */
 void Filter::calculate_sed_independent_properties(){
-
     // Calculate Filter properties
     const auto& wavelength_nm = this->wavelength_nm;
     const auto& transmission = this->transmission;
@@ -222,7 +217,6 @@ void Filter::calculate_sed_independent_properties(){
     // the filter transmission curve.
     // W = int(T dlamb) / max(T)
     this->width = (norm / xt::amax(transmission)[0]);
-
 
     // FWHM
     // the difference between the two wavelengths for which filter transmission is
@@ -327,7 +321,6 @@ QSpectralFluxDensity Filter::get_ST_zero_flux(){
     return std::pow(10, -0.4 * this->get_ST_zero_mag()) * flam;
 }
 
-
 /**
  * @brief ST flux zero point in Jansky (Jy)
  *
@@ -366,7 +359,6 @@ QSpectralFluxDensity Filter::get_Vega_zero_flux(){
         nm, flam).to(flam);
     return flux_flam * flam;
 }
-
 
 /**
  * @brief Vega flux zero point in Jansky (Jy)
@@ -412,7 +404,6 @@ QSpectralFluxDensity Filter::get_flux(
     const DMatrix& flux,
     const QLength& wavelength_unit,
     const QSpectralFluxDensity& flux_unit) {
-
     //filter on wavelength units
     const DMatrix& filt_wave = this->get_wavelength(wavelength_unit);
     const DMatrix& filt_trans = this->get_transmission();
