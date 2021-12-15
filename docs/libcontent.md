@@ -19,7 +19,7 @@ filters_properties.csv
 
 
 @htmlonly
-<div class="dynheader"><div class="dynsection">
+<div id="filterTable"></div>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript"charset="utf-8">
     d3.text("filters_properties.csv", function(data) {
@@ -38,5 +38,4 @@ filters_properties.csv
                 .text(function(d) { return d; });
     });
 </script>
-</div></div>
 @endhtmlonly
