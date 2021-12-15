@@ -81,7 +81,25 @@ Filter download_svo_filter(const std::string & id){
                                cpr::Parameters{{"ID", id}});
     votable::VOTable vot;
     vot.from_content(r.text);
-    return cphot::get_filter(vot);
+    return get_filter(vot);
+}
+
+/**
+ * @brief Download the filter library from pyphot repository
+ *
+ * The url to pyphot's file is hard-coded in the function for:
+ * "https://raw.githubusercontent.com/mfouesneau/pyphot/master/pyphot/libs/new_filters.hd5"
+ *
+ * @param where         where to store the hdf5 file
+ * @return std::string  path to the hdf5 file
+ */
+std::string download_pyphot_hdf5library(const std::string & where="./pyphot_library.hdf5"){
+    const std::string pyphot_url = "https://raw.githubusercontent.com/mfouesneau/pyphot/master/pyphot/libs/new_filters.hd5";
+    cpr::Response r = cpr::Get(cpr::Url{pyphot_url});
+    std::ofstream libout(where);
+    libout << r.text;
+    libout.close();
+    return where;
 }
 
 }; // namespace cphot

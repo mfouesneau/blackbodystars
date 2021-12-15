@@ -1,17 +1,23 @@
+/**
+ * @file hdf5lib_test.cpp
+ * @brief Testing the hdf5 library interface and the file content
+ *
+ * In this module, we create a HDF5Library from the pyphot library file and
+ * extract the characteristics of all the filters to create a csv table.
+ * The pyphot library is downloaded from the pyphot website using
+ * `cphot::download_pyphot_hdf5library`.
+ */
 #include <cphot/filter.hpp>
 #include <cphot/library.hpp>
 #include <cphot/rquantities.hpp>
 #include <iostream>
 #include <fstream>
+#include <cphot/io.hpp>
 
 
 int main(){
-
-    std::string filter_name ("GaiaDR2_BP");
-    std::string filename ("new_filters.hd5");
-    auto tmp = cphot::get_filter_from_hdf5_library(filename, filter_name);
-
-    tmp.info();
+    std::string filename = "pyphot_library.hdf5";
+    cphot::download_pyphot_hdf5library(filename);
 
     auto lib = cphot::HDF5Library(filename);
     std::cout << lib << "\n";

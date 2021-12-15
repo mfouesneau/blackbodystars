@@ -26,6 +26,7 @@ energetic detectors are also handled transparently for the computations.
 What's new?
 -----------
 
+* [Dec 15, 2021] Added `cphot::download_pyphot_hdf5library` for convenience.
 * [Dec 14, 2021] Added `cphot::HDF5Library` interface and revised documentation.
 * [Dec 10, 2021] First portage of the pyphot library to C++. (no internal library)
 
