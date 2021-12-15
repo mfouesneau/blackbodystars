@@ -10,6 +10,7 @@
 #include <cphot/votable.hpp>
 #include <cphot/vega.hpp>
 #include <cphot/sun.hpp>
+#include <cphot/licks.hpp>
 
 
 
@@ -37,4 +38,8 @@ int main(){
     s = cphot::Sun(10 * parsec);
     std::cout << s.get_wavelength(angstrom) << " angstrom\n"
               << s.get_flux(flam) << " flam\n";
+
+    cphot::LickLibrary lib;
+    std::cout << lib.get_content() << "\n";
+    
 }

@@ -38,6 +38,7 @@
  *
  */
 #include <cmath>
+#include <vector>
 #include <cphot/rquantities.hpp>
 #include <cphot/hardcoded_data/licks_data.hpp>
 
@@ -77,7 +78,7 @@ DMatrix reduce_resolution(const DMatrix& w, const DMatrix& flux, double fwhm0, d
     DMatrix lick_sigma = xt::sqrt((res * res - fwhm0 * fwhm0)) / constant;
 
     // Convolution by g=1/sqrt(2*pi*sigma^2) * exp(-r^2/(2*sigma^2))
-    DMatrix flux_red = xt::zeros<double>(flux.shape);
+    DMatrix flux_red = xt::zeros<double>({flux.size()});
 
     for (size_t i=0; i < lick_sigma.size(); ++i){
         double sigma = lick_sigma(i);
@@ -86,10 +87,10 @@ DMatrix reduce_resolution(const DMatrix& w, const DMatrix& flux, double fwhm0, d
         double delta = std::min(sigma_floor, sigma * 0.1);
         DMatrix delta_wj = xt::arange(-maxsigma, + maxsigma, delta);
         auto wj = delta_wj + w[i];
-        auto fluxj = xt::interp(wj, w, flux, 0., 0.)
-        flux_red[i] = xt::sum(fluxj * delta * xt::exp(-0.5 * xt::pow(delta_wj / sigma, 2)));
+        auto fluxj = xt::interp(wj, w, flux, 0., 0.);
+        flux_red[i] = xt::sum(fluxj * delta * xt::exp(-0.5 * xt::pow(delta_wj / sigma, 2)))();
     }
-    flux_red /= lick_sigma * const;
+    flux_red /= lick_sigma * constant;
     return flux_red;
 }
 
@@ -115,7 +116,7 @@ class LickIndex{
                   double blue_continuum_min, double blue_continuum_max,
                   double red_continuum_min, double red_continuum_max,
                   const QLength & wavelength_unit, const std::string& description);
-        LickIndex(const lickdata& data);
+        LickIndex(const cphot_licks::lickdata& data);
 
         std::string get_name() const;
 
@@ -149,11 +150,11 @@ LickIndex::LickIndex(const std::string& name, double index_band_min, double inde
  *
  * @param data  data from the hardcoded data indices
  */
-LickIndex::LickIndex(const lickdata& data)
+LickIndex::LickIndex(const cphot_licks::lickdata& data)
             : name(data.name), index_band_min(data.index_band_min), index_band_max(data.index_band_max),
               blue_continuum_min(data.blue_continuum_min), blue_continuum_max(data.blue_continuum_max),
               red_continuum_min(data.red_continuum_min), red_continuum_max(data.red_continuum_max),
-              wavelength_unit(data.wavelength_unit), description(data.description){}
+              wavelength_unit(data.wavelength_unit){}
 
 /**
  * @brief Get the name object
@@ -169,8 +170,8 @@ std::string LickIndex::get_name() const {
  * @brief display some information about the index
  *
  */
-void LickIndex::info(){
-    double wave_conv = this->wavelength_unit.to(nm).value();
+void LickIndex::info() const {
+    double wave_conv = this->wavelength_unit.to(nm);
 
     std::cout << "Lick Index: " << this->name << "\n"
               << "  Index band: [" << this->index_band_min * wave_conv << ", " << this->index_band_max * wave_conv << "] nm" << "\n"
@@ -197,7 +198,38 @@ std::ostream & operator<<(std::ostream &os,
  * @brief Collection of Lick indices
  */
 class LickLibrary{
+    private:
+        std::vector<LickIndex> licks;  ///< registered lick indices
+
+    public:
+        LickLibrary();
+        std::vector<std::string> get_content();
 
 };
+
+/**
+ * @brief Construct a new Lick Library from hard coded definitions
+ *
+ * @see `cphot_licks::lickdefs`
+ * 
+ */
+LickLibrary::LickLibrary(){
+    for (const auto index: cphot_licks::lickdefs){
+        this->licks.push_back(LickIndex(index));
+    }
+}
+
+/**
+ * @brief returns the list of lick indices registered
+ * 
+ * @return std::vector<std::string> list of the indices
+ */
+std::vector<std::string> LickLibrary::get_content(){
+    std::vector<std::string> lst;
+    for (const auto & index: this->licks){
+        lst.push_back(index.get_name());
+    }
+    return lst;
+}
 
 }// namespace cphot

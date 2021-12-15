@@ -18,6 +18,8 @@
 #include <string>
 #include <cphot/rquantities.hpp>
 
+namespace cphot_licks {
+
 /**
  * @brief Stores the definition of a Lick index
  */
@@ -85,3 +87,5 @@ static const std::vector<lickdata> lickdefs({
 {"Ca3_LB13"       , 8642.0  , 8682.0  ,  8619.0  , 8642.0  ,  8700.0  , 8725.0  , angstrom},
 {"Hbeta0"         , 4839.275, 4877.097,  4821.175, 4838.404,  4897.445, 4915.845, angstrom}
 });
+
+}; // namespace cphot_licks
