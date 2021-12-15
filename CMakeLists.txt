@@ -112,6 +112,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_IN ${PROJECT_SOURCE_DIR}/docs/Doxyfile.in)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/doc_doxygen/Doxyfile)
     set(DOXYGEN_HTML_EXTRA_STYLESHEET ${PROJECT_SOURCE_DIR}/docs/doxygen-awesome.css)
+    set(DOXYGEN_HTML_EXTRA ${PROJECT_SOURCE_DIR}/docs/filters_properties.csv)
 
     # request to configure the file
     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
