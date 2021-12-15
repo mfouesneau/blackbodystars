@@ -25,7 +25,7 @@ filters_properties.csv
     d3.text("filters_properties.csv", function(data) {
         var parsedCSV = d3.csv.parseRows(data);
 
-        var container = d3.select("body")
+        var container = d3.select("contents")
             .append("table")
 
             .selectAll("tr")
