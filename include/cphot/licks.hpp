@@ -66,15 +66,15 @@ using DMatrix = xt::xarray<double, xt::layout_type::row_major>;
  */
 DMatrix reduce_resolution(const DMatrix& w, const DMatrix& flux, double fwhm0, double sigma_floor){
     // all in AA
-    const DMatrix w_lick_res = (4000., 4400., 4900., 5400., 6000.);   ///< Lick resolution anchor points in AA
-    const DMatrix lick_res   = (11.5, 9.2, 8.4, 8.4, 9.8);              ///< FWHM in AA
+    const DMatrix w_lick_res {4000., 4400., 4900., 5400., 6000.};  // Lick resolution anchor points in AA
+    const DMatrix lick_res   {11.5, 9.2, 8.4, 8.4, 9.8};           // FWHM in AA
 
     // Linear interpolation of lick_res over w
     // TODO: need to add extrapolation
     DMatrix res = xt::interp(w, w_lick_res, lick_res);
 
     // Compute width from fwhm
-    double constant = 2. * std::sqrt(2. * std::log(2));     ///< constant that does the conversion fwhm --> sigma
+    double constant = 2. * std::sqrt(2. * std::log(2));     // constant that converts fwhm --> sigma
     DMatrix lick_sigma = xt::sqrt((res * res - fwhm0 * fwhm0)) / constant;
 
     // Convolution by g=1/sqrt(2*pi*sigma^2) * exp(-r^2/(2*sigma^2))
@@ -109,18 +109,26 @@ class LickIndex{
         double red_continuum_min;     ///< minimal wavelength of red continuum
         double red_continuum_max;     ///< maximal wavelength of red continuum
         QLength wavelength_unit;      ///< wavelength unit (usually Angstrom or nm)
+        bool    b_mag;                ///< is the index in magnitudes? (or equivalent width)
         std::string description;      ///< description/notes
 
     public:
         LickIndex(const std::string& name, double index_band_min, double index_band_max,
                   double blue_continuum_min, double blue_continuum_max,
                   double red_continuum_min, double red_continuum_max,
-                  const QLength & wavelength_unit, const std::string& description);
+                  const QLength & wavelength_unit, const std::string& description,
+                  bool is_mag);
         LickIndex(const cphot_licks::lickdata& data);
 
+        double get(const DMatrix& w, const DMatrix& flux, const QLength & wavelength_unit);
+
         std::string get_name() const;
+        bool is_mag() {return this->b_mag;}
 
         void info() const;
+
+        void get_continuum_normalized_region_around_line(const DMatrix & wi,
+                                                         const DMatrix & flux);
 };
 
 /**
@@ -139,11 +147,11 @@ class LickIndex{
 LickIndex::LickIndex(const std::string& name, double index_band_min, double index_band_max,
                      double blue_continuum_min, double blue_continuum_max,
                      double red_continuum_min, double red_continuum_max,
-                     const QLength& wavelength_unit, const std::string& description)
+                     const QLength& wavelength_unit, const std::string& description, bool is_mag)
             : name(name), index_band_min(index_band_min), index_band_max(index_band_max),
               blue_continuum_min(blue_continuum_min), blue_continuum_max(blue_continuum_max),
               red_continuum_min(red_continuum_min), red_continuum_max(red_continuum_max),
-              wavelength_unit(wavelength_unit), description(description){}
+              wavelength_unit(wavelength_unit), description(description), b_mag(is_mag){}
 
 /**
  * @brief Construct a new Lick Index:: Lick Index object
@@ -154,7 +162,7 @@ LickIndex::LickIndex(const cphot_licks::lickdata& data)
             : name(data.name), index_band_min(data.index_band_min), index_band_max(data.index_band_max),
               blue_continuum_min(data.blue_continuum_min), blue_continuum_max(data.blue_continuum_max),
               red_continuum_min(data.red_continuum_min), red_continuum_max(data.red_continuum_max),
-              wavelength_unit(data.wavelength_unit){}
+              wavelength_unit(data.wavelength_unit), b_mag(data.is_mag){}
 
 /**
  * @brief Get the name object
@@ -176,7 +184,49 @@ void LickIndex::info() const {
     std::cout << "Lick Index: " << this->name << "\n"
               << "  Index band: [" << this->index_band_min * wave_conv << ", " << this->index_band_max * wave_conv << "] nm" << "\n"
               << "  Blue continuum: [" << this->blue_continuum_min * wave_conv << ", " << this->blue_continuum_max * wave_conv << "] nm" << "\n"
-              << "  Red continuum: [" << this->red_continuum_min * wave_conv << ", " << this->red_continuum_max * wave_conv << "] nm" << "\n";
+              << "  Red continuum: [" << this->red_continuum_min * wave_conv << ", " << this->red_continuum_max * wave_conv << "] nm" << "\n"
+              << "  Expressed value in " << (this->b_mag ? "magnitude" : "equivalent-width") << "\n";
+}
+
+void LickIndex::get_continuum_normalized_region_around_line(
+    const DMatrix & wi, const DMatrix & flux
+){
+    auto ind_cont = xt::argwhere(
+        ( (wi >= this->blue_continuum_min) && (wi <= this->blue_continuum_max) ) ||
+        ( (wi >= this->red_continuum_min)  && (wi <= this->red_continuum_max)  )
+        );
+
+    auto ind_range = xt::argwhere(
+        ( (wi > this->index_band_min) && (wi < this->index_band_max) )
+        );
+
+    const DMatrix & wnew = wi[ind_range];
+    const DMatrix & wcont = wi[ind_cont];
+
+    // Make a flux array of shape (ind_range.size()))
+
+
+
+
+}
+
+/**
+ * @brief compute spectral index after continuum subtraction
+ *
+ * @param w         array of wavelengths in AA
+ * @param flux      array of flux values for different spectra in the series
+ * @return double   equivalent width or magnitude
+ */
+double LickIndex::get(const DMatrix& w,
+                      const DMatrix& flux,
+                      const QLength & wavelength_unit){
+
+    double wave_conv =wavelength_unit.to(angstrom);
+    DMatrix w_aa = w * wave_conv;
+
+    return 0;
+
+
 }
 
 /**
@@ -204,6 +254,10 @@ class LickLibrary{
     public:
         LickLibrary();
         std::vector<std::string> get_content();
+        std::vector<std::string> find (const std::string & name,
+                                       bool case_sensitive=true);
+        LickIndex load_filter(const std::string& filter_name);
+        size_t size(){return this->licks.size();};
 
 };
 
@@ -211,7 +265,7 @@ class LickLibrary{
  * @brief Construct a new Lick Library from hard coded definitions
  *
  * @see `cphot_licks::lickdefs`
- * 
+ *
  */
 LickLibrary::LickLibrary(){
     for (const auto index: cphot_licks::lickdefs){
@@ -221,7 +275,7 @@ LickLibrary::LickLibrary(){
 
 /**
  * @brief returns the list of lick indices registered
- * 
+ *
  * @return std::vector<std::string> list of the indices
  */
 std::vector<std::string> LickLibrary::get_content(){
@@ -230,6 +284,61 @@ std::vector<std::string> LickLibrary::get_content(){
         lst.push_back(index.get_name());
     }
     return lst;
+}
+
+/**
+ * @brief Look for lick index names
+ *
+ * @param name                      name to look for
+ * @param case_sensitive            set if the case needs to be respected (default true)
+ * @return std::vector<std::string> list of potential candidates
+ */
+std::vector<std::string> LickLibrary::find (const std::string & name,
+                                            bool case_sensitive){
+
+    std::vector<std::string> result;
+
+    if (case_sensitive) {
+        for (const auto & lib_name: this->get_content()) {
+            if (lib_name.find(name) != std::string::npos)
+                result.push_back(lib_name);
+        }
+    } else {
+        std::string name_lower = tolower(name);
+        for (const auto & lib_name: this->get_content()) {
+            if (tolower(lib_name).find(name) != std::string::npos)
+                result.push_back(lib_name);
+        }
+    }
+    return result;
+}
+
+/**
+ * @brief Load a given filter from the library
+ *
+ * @param filter_name   normalized names according to the library
+ * @return Filter object
+ */
+LickIndex LickLibrary::load_filter(const std::string& filter_name){
+    for (const auto & index: this->licks){
+        if (index.get_name() == filter_name){
+            return index;
+        }
+    }
+    throw std::runtime_error("Filter " + filter_name + " not found in library");
+}
+
+/**
+ * @brief Nice representation of LickLibrary
+ *
+ * @param os   stream to output the representation
+ * @param F    Filter object
+ * @return std::ostream&  same as os
+ */
+std::ostream & operator<<(std::ostream &os,
+                          LickLibrary &l){
+    os << "LicLibrary: " << "   Contains " << l.size() << " registered indices." << "\n";
+    return os;
 }
 
 }// namespace cphot
