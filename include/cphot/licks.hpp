@@ -127,8 +127,10 @@ class LickIndex{
 
         void info() const;
 
-        void get_continuum_normalized_region_around_line(const DMatrix & wi,
-                                                         const DMatrix & flux);
+        /*
+         * void get_continuum_normalized_region_around_line(const DMatrix & wi,
+         *                                                  const DMatrix & flux);
+         */
 };
 
 /**
@@ -188,27 +190,25 @@ void LickIndex::info() const {
               << "  Expressed value in " << (this->b_mag ? "magnitude" : "equivalent-width") << "\n";
 }
 
-void LickIndex::get_continuum_normalized_region_around_line(
-    const DMatrix & wi, const DMatrix & flux
-){
-    auto ind_cont = xt::argwhere(
-        ( (wi >= this->blue_continuum_min) && (wi <= this->blue_continuum_max) ) ||
-        ( (wi >= this->red_continuum_min)  && (wi <= this->red_continuum_max)  )
-        );
-
-    auto ind_range = xt::argwhere(
-        ( (wi > this->index_band_min) && (wi < this->index_band_max) )
-        );
-
-    const DMatrix & wnew = wi[ind_range];
-    const DMatrix & wcont = wi[ind_cont];
-
-    // Make a flux array of shape (ind_range.size()))
-
-
-
-
-}
+/*
+ * void LickIndex::get_continuum_normalized_region_around_line(
+ *     const DMatrix & wi, const DMatrix & flux
+ * ){
+ *     auto ind_cont = xt::argwhere(
+ *         ( (wi >= this->blue_continuum_min) && (wi <= this->blue_continuum_max) ) ||
+ *         ( (wi >= this->red_continuum_min)  && (wi <= this->red_continuum_max)  )
+ *         );
+ *
+ *     auto ind_range = xt::argwhere(
+ *         ( (wi > this->index_band_min) && (wi < this->index_band_max) )
+ *         );
+ *
+ *     const DMatrix & wnew = wi[ind_range];
+ *     const DMatrix & wcont = wi[ind_cont];
+ *
+ *     // Make a flux array of shape (ind_range.size()))
+ * }
+ */
 
 /**
  * @brief compute spectral index after continuum subtraction
@@ -223,7 +223,6 @@ double LickIndex::get(const DMatrix& w,
 
     double wave_conv =wavelength_unit.to(angstrom);
     DMatrix w_aa = w * wave_conv;
-
     return 0;
 
 

@@ -41,5 +41,5 @@ int main(){
 
     cphot::LickLibrary lib;
     std::cout << lib.get_content() << "\n";
-    
+
 }
